@@ -1,6 +1,6 @@
 {
-	"id" : "funnyBlocks",
-	"version" : "1.0.0",
+	"id" : "FunnyBlocks",
+	"version" : "0.1.0",
 	"displayName" : "Funny Blocks",
 	"author" : "A'nW",
 	"description" :
