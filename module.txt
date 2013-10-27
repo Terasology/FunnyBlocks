@@ -1,8 +1,9 @@
 {
 	"id" : "FunnyBlocks",
 	"version" : "0.1.0",
-	"displayName" : "Funny Blocks",
 	"author" : "A'nW",
-	"description" :
-	"A module adding funny/random goofy blocks just because they are awesome!"
+	"displayName" : "Funny Blocks",
+	"description" : "A module adding funny/random goofy blocks just because they are awesome!",
+    "dependencies" : [],
+    "isServerSideOnly" : false
 }
