@@ -60,10 +60,12 @@ public class SpeedBoosterSystem extends BaseComponentSystem implements UpdateSub
     public void onEnterBlock(OnEnterBlockEvent event, EntityRef entity) {
 
         LocationComponent loc = entity.getComponent(LocationComponent.class);
+        if (loc == null) return;
         Vector3f pos = loc.getWorldPosition();
         pos.setY( pos.getY() -1 );
         Block block = worldProvider.getBlock(pos);
         CharacterMovementComponent cmc = entity.getComponent( CharacterMovementComponent.class );
+        if (cmc == null) return;
         SpeedBoosterComponent sbc = block.getEntity().getComponent( SpeedBoosterComponent.class );
         if ( sbc != null ) {
             cmc.speedMultiplier = sbc.speedMultiplier;
