@@ -1,9 +1,11 @@
 {
 	"id" : "FunnyBlocks",
-	"version" : "0.1.1-SNAPSHOT",
+	"version" : "0.2.0-ElBatanonySpeedBlock",
 	"author" : "A'nW",
 	"displayName" : "Funny Blocks",
 	"description" : "A module adding funny/random goofy blocks just because they are awesome!",
-    "dependencies" : [],
+    "dependencies" : [
+        {"id": "Core", "minVersion": "1.0.0"}
+    ],
     "isServerSideOnly" : false
 }
