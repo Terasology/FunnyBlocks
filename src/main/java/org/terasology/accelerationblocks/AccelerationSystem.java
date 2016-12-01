@@ -40,6 +40,10 @@ import org.terasology.world.BlockEntityRegistry;
 import org.terasology.world.WorldProvider;
 import org.terasology.world.block.Block;
 
+/**
+ * This system reacts on Entities passing through block with AccelerationBlockComponent, adding AccelerationComponent to them
+ * All Entities with AccelerationComponent get acceleration
+ */
 @RegisterSystem(RegisterMode.AUTHORITY)
 public class AccelerationSystem extends BaseComponentSystem implements UpdateSubscriberSystem {
     private static final Logger logger = LoggerFactory.getLogger(AccelerationSystem.class);
@@ -129,6 +133,13 @@ public class AccelerationSystem extends BaseComponentSystem implements UpdateSub
         acceleration.ignoreBlockDirection = blockAcceleration.ignoreBlockDirection;
     }
 
+    /**
+     * Generates rotation Quat
+     * @param x Rotation axis x
+     * @param y Rotation axis y
+     * @param z Rotation axis z
+     * @param angle Rotation angle
+     */
     private static Quat4f getRotationQuat(int x, int y, int z, float angle) {
         Quat4f result = new Quat4f();
         float nw = (float) Math.cos(angle / 2);
