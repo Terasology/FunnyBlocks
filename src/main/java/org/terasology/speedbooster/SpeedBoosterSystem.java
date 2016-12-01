@@ -36,10 +36,6 @@ import org.terasology.world.BlockEntityRegistry;
 import org.terasology.world.WorldProvider;
 import org.terasology.world.block.Block;
 
-/**
- * Created by ElBatanony on 30-Nov-16.
- */
-
 @RegisterSystem(RegisterMode.AUTHORITY)
 public class SpeedBoosterSystem extends BaseComponentSystem implements UpdateSubscriberSystem {
     private static final Logger logger = LoggerFactory.getLogger(SpeedBoosterSystem.class);
@@ -56,23 +52,23 @@ public class SpeedBoosterSystem extends BaseComponentSystem implements UpdateSub
     @Override
     public void update(float delta) {}
 
-    @ReceiveEvent
+    @ReceiveEvent(components = {LocationComponent.class, CharacterMovementComponent.class})
     public void onEnterBlock(OnEnterBlockEvent event, EntityRef entity) {
 
-        LocationComponent loc = entity.getComponent(LocationComponent.class);
-        if (loc == null) return;
-        Vector3f pos = loc.getWorldPosition();
-        pos.setY( pos.getY() -1 );
-        Block block = worldProvider.getBlock(pos);
+        LocationComponent loc = entity.getComponent(LocationComponent.class); // get player LocationComponent
+        Vector3f pos = loc.getWorldPosition(); // get player position
+        pos.setY(pos.getY() -1); // get position below player
+        Block block = worldProvider.getBlock(pos); // get block at that position
         CharacterMovementComponent cmc = entity.getComponent( CharacterMovementComponent.class );
-        if (cmc == null) return;
         SpeedBoosterComponent sbc = block.getEntity().getComponent( SpeedBoosterComponent.class );
         if ( sbc != null ) {
+            // this will increase the speed of player
             cmc.speedMultiplier = sbc.speedMultiplier;
             entity.saveComponent(cmc);
             Vector3f imp = cmc.getVelocity().normalize().scale(64).setY(6);
             entity.send(new CharacterImpulseEvent(imp));
         } else {
+            // this will return speed of player to normal
             cmc.speedMultiplier = 1f;
             entity.saveComponent(cmc);
         }
