@@ -17,9 +17,6 @@ package org.terasology.speedbooster.component;
 
 import org.terasology.entitySystem.Component;
 
-/**
- * Created by ElBatanony on 30-Nov-16.
- */
 public class SpeedBoosterComponent implements Component {
     public int speedMultiplier = 5;
 }
