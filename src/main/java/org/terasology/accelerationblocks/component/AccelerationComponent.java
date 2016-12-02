@@ -15,23 +15,11 @@
  */
 package org.terasology.accelerationblocks.component;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.terasology.accelerationblocks.AccelerationSystem;
 import org.terasology.entitySystem.Component;
-import org.terasology.math.Side;
 import org.terasology.math.geom.Vector3f;
 
 public final class AccelerationComponent implements Component {
     public Vector3f velocity;
 
     public boolean ignoreBlockDirection;
-
-    public AccelerationComponent() {
-    }
-
-    public void initialize(Vector3f velocity, boolean ignoreBlockDirection){
-        this.velocity = velocity;
-        this.ignoreBlockDirection = ignoreBlockDirection;
-    }
 }

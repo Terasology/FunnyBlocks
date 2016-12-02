@@ -104,20 +104,19 @@ public class AccelerationSystem extends BaseComponentSystem implements UpdateSub
 
     private void initAcceleration(AccelerationComponent acceleration, AccelerationBlockComponent blockAcceleration, Side side) {
         Vector3f velocity = new Vector3f(blockAcceleration.velocity);
-        if(!blockAcceleration.ignoreBlockDirection){
+        if (!blockAcceleration.ignoreBlockDirection) {
             Vector3i originalDirection = Side.FRONT.getVector3i();
             Vector3i blockDirection = side.getVector3i();
-            double angle = Math.acos(originalDirection.getX() * blockDirection.getX() +
-                    originalDirection.getZ() * blockDirection.getZ());
+            double angle = Math.acos(originalDirection.getX() * blockDirection.getX() + originalDirection.getZ() * blockDirection.getZ());
 
             Vector3i rotAxis = Vector3i.up();
-            Quat4f rotation = getRotationQuat(rotAxis.getX(), rotAxis.getY(), rotAxis.getZ(), (float)angle);
+            Quat4f rotation = getRotationQuat(rotAxis.getX(), rotAxis.getY(), rotAxis.getZ(), (float) angle);
             Quat4f temp = new Quat4f(rotation);
             temp.mul(velocity);
             temp.mulInverse(rotation);
 
             //to determine right and left directions
-            if(blockDirection.getX() > 0){
+            if (blockDirection.getX() > 0) {
                 temp.inverse();
             }
 
@@ -126,15 +125,16 @@ public class AccelerationSystem extends BaseComponentSystem implements UpdateSub
             velocity.setZ(temp.getZ());
         }
 
-        acceleration.initialize(velocity, blockAcceleration.ignoreBlockDirection);
+        acceleration.velocity = velocity;
+        acceleration.ignoreBlockDirection = blockAcceleration.ignoreBlockDirection;
     }
 
-    private static Quat4f getRotationQuat(int x, int y, int z, float angle){
+    private static Quat4f getRotationQuat(int x, int y, int z, float angle) {
         Quat4f result = new Quat4f();
-        float nw = (float)Math.cos(angle / 2);
-        float nx = x * (float)Math.sin(angle / 2);
-        float ny = y * (float)Math.sin(angle / 2);
-        float nz = z * (float)Math.sin(angle / 2);
+        float nw = (float) Math.cos(angle / 2);
+        float nx = x * (float) Math.sin(angle / 2);
+        float ny = y * (float) Math.sin(angle / 2);
+        float nz = z * (float) Math.sin(angle / 2);
         result.set(nx, ny, nz, nw);
         return result;
     }
