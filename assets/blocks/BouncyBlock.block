@@ -1,10 +1,19 @@
 {
     "displayName": "Bouncy block",
-    "categories" : ["funnyblock"],
+    "attachmentAllowed" : true,
+    "shadowCasting" : false,
+    "rotation" : "horizontal",
+    "categories" : ["BouncyBlock"],
     "hardness": 15,
-    "tile" : "funnyBlocks:BouncyBlock",
+    "tiles": {
+      "top": "funnyBlocks:BouncyBlock",
+      "sides": "funnyBlocks:BouncyBlock_side",
+      "bottom": "funnyBlocks:BouncyBlock"
+    },
     "entity" : 
     {
-         "prefab" : "funnyBlocks:BouncyBlock"
+         "prefab" : "funnyBlocks:BouncyBlock",
+         "temporary" : false,
+         "keepActive" : true
     }
 }
