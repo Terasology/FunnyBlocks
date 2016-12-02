@@ -1,0 +1,10 @@
+{
+    "displayName": "Bouncy block",
+    "categories" : ["funnyblock"],
+    "hardness": 15,
+    "tile" : "funnyBlocks:BouncyBlock",
+    "entity" : 
+    {
+         "prefab" : "funnyBlocks:BouncyBlock"
+    }
+}
