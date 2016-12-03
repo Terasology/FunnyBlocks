@@ -6,7 +6,7 @@
     "categories" : ["BouncyBlock"],
     "hardness": 15,
     "tiles": {
-      "sides": "funnyBlocks:BouncyBlockSide",
+      "sides": "funnyBlocks:BouncyBlockSide"
     },
     "entity" : 
     {
