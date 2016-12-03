@@ -2,9 +2,13 @@
 *.iml
 build.gradle
 
+#compiled
+.class
+
 # Eclipse file
 .project
 .classpath
 .settings/
 bin/
 build/
+

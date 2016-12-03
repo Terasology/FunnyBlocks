@@ -24,44 +24,38 @@ import org.terasology.entitySystem.systems.RegisterMode;
 import org.terasology.funnyblocks.component.BouncyBlockComponent;
 
 @RegisterSystem(RegisterMode.AUTHORITY)
-public class BouncySystem extends BaseComponentSystem implements UpdateSubscriberSystem 
+public class BouncySystem extends BaseComponentSystem
 {
+    @In
+    private BlockEntityRegistry blockEntityProvider;
 
-	@In
-	private BlockEntityRegistry blockEntityProvider;
+    @In
+    private Time time;
 
-	@In
-	private Time time;
+    @In
+    private EntityManager entityManager;
 
-	@In
-	private EntityManager entityManager;
+    @In
+    private WorldProvider worldProvider;
 
-	@In
-	private WorldProvider worldProvider;
+    private final Logger logger = LoggerFactory.getLogger(BouncySystem.class);
 
-	@Override
-	public void update(float delta) 
-	{
-
-	}
-	
-	private static final Logger logger = LoggerFactory.getLogger(BouncySystem.class);
-
-	@ReceiveEvent
-    public void onCharacterMovement(CharacterMoveInputEvent event, EntityRef player) 
-	{
-		Vector3f playerPosition = new Vector3f(player.getComponent(LocationComponent.class).getWorldPosition());
-		for (EntityRef blockEntity : entityManager.getEntitiesWith(BouncyBlockComponent.class,LocationComponent.class)) 
-		{
-			Vector3f blockPos = blockEntity.getComponent(LocationComponent.class).getWorldPosition();
-			if(blockPos!=null && playerPosition!=null)
-			{
-				if(Math.round(playerPosition.x) == blockPos.x && Math.round(playerPosition.z) == blockPos.z && Math.round(playerPosition.y - 1) == blockPos.y) 
-				{
-						Vector3f impulse = new Vector3f(0,blockEntity.getComponent(BouncyBlockComponent.class).force,0);
-						player.send(new CharacterImpulseEvent(impulse));
-				}
+    @ReceiveEvent
+    public void onCharacterMovement(CharacterMoveInputEvent event, EntityRef player)
+    {
+        Vector3f playerPosition = new Vector3f(player.getComponent(LocationComponent.class).getWorldPosition());
+        for (EntityRef blockEntity : entityManager.getEntitiesWith(BouncyBlockComponent.class, LocationComponent.class))
+        {
+            Vector3f blockPos = blockEntity.getComponent(LocationComponent.class).getWorldPosition();
+            if (blockPos != null && playerPosition != null)
+            {
+                if (Math.round(playerPosition.x) == blockPos.x && Math.round(playerPosition.z) == blockPos.z
+                        && Math.round(playerPosition.y - 1) == blockPos.y)
+                {
+                    Vector3f impulse = new Vector3f(0, blockEntity.getComponent(BouncyBlockComponent.class).force, 0);
+                    player.send(new CharacterImpulseEvent(impulse));
+                }
             }
         }
-	}	
+    }
 }
