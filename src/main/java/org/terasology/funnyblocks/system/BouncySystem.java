@@ -43,6 +43,11 @@ public class BouncySystem extends BaseComponentSystem
     @ReceiveEvent
     public void onCharacterMovement(CharacterMoveInputEvent event, EntityRef player)
     {
+        if (player.getComponent(LocationComponent.class) == null || player.getComponent(LocationComponent.class).getWorldPosition() == null)
+        {
+            return;
+        }
+        
         Vector3f playerPosition = new Vector3f(player.getComponent(LocationComponent.class).getWorldPosition());
         for (EntityRef blockEntity : entityManager.getEntitiesWith(BouncyBlockComponent.class, LocationComponent.class))
         {
