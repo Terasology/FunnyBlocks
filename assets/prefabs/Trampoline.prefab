@@ -1,0 +1,6 @@
+{
+  "AccelerationBlock" : {
+    "velocity" : [0, 10, 0],
+    "ignoreBlockDirection" : true
+  }
+}

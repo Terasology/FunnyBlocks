@@ -1,0 +1,12 @@
+{
+  "displayName" : "Trampoline Tile",
+  "attachmentAllowed" : false,
+  "shadowCasting" : false,
+  "penetrable": true,
+  "rotation" : "None",
+  "shape" : "funnyBlocks:trampolineTile",
+  "tile" : "funnyBlocks:TrampolineTile",
+  "entity" : {
+    "prefab" : "funnyBlocks:Trampoline"
+  }
+}
