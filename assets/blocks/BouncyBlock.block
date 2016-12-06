@@ -1,0 +1,17 @@
+{
+    "displayName": "BouncyBlock",
+    "attachmentAllowed" : true,
+    "shadowCasting" : false,
+    "rotation" : "horizontal",
+    "categories" : ["BouncyBlock"],
+    "hardness": 15,
+    "tiles": {
+      "sides": "funnyBlocks:BouncyBlockSide"
+    },
+    "entity" : 
+    {
+         "prefab" : "funnyBlocks:BouncyBlock",
+         "temporary" : false,
+         "keepActive" : true
+    }
+}

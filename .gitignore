@@ -1,4 +1,13 @@
 # Simple stuff modules should ignore
 *.iml
 build.gradle
-build
+
+#compiled
+.class
+
+# Eclipse file
+.project
+.classpath
+.settings/
+bin/
+build/
