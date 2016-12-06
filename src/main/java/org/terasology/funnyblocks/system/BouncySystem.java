@@ -1,8 +1,22 @@
+/*
+ * Copyright 2016 MovingBlocks
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
 package org.terasology.funnyblocks.system;
 
 import org.terasology.entitySystem.systems.BaseComponentSystem;
 import org.terasology.entitySystem.systems.RegisterSystem;
-import org.terasology.entitySystem.systems.UpdateSubscriberSystem;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -12,10 +26,8 @@ import org.terasology.entitySystem.entity.EntityRef;
 import org.terasology.entitySystem.event.ReceiveEvent;
 import org.terasology.logic.characters.CharacterImpulseEvent;
 import org.terasology.logic.characters.CharacterMoveInputEvent;
-import org.terasology.logic.characters.CharacterMovementComponent;
 import org.terasology.logic.location.LocationComponent;
 import org.terasology.math.geom.Vector3f;
-import org.terasology.math.geom.Vector3i;
 import org.terasology.registry.In;
 import org.terasology.world.BlockEntityRegistry;
 import org.terasology.world.WorldProvider;
@@ -24,8 +36,7 @@ import org.terasology.entitySystem.systems.RegisterMode;
 import org.terasology.funnyblocks.component.BouncyBlockComponent;
 
 @RegisterSystem(RegisterMode.AUTHORITY)
-public class BouncySystem extends BaseComponentSystem
-{
+public class BouncySystem extends BaseComponentSystem {
     @In
     private BlockEntityRegistry blockEntityProvider;
 
@@ -41,22 +52,17 @@ public class BouncySystem extends BaseComponentSystem
     private final Logger logger = LoggerFactory.getLogger(BouncySystem.class);
 
     @ReceiveEvent
-    public void onCharacterMovement(CharacterMoveInputEvent event, EntityRef player)
-    {
-        if (player.getComponent(LocationComponent.class) == null || player.getComponent(LocationComponent.class).getWorldPosition() == null)
-        {
+    public void onCharacterMovement(CharacterMoveInputEvent event, EntityRef player) {
+        if (player.getComponent(LocationComponent.class) == null || player.getComponent(LocationComponent.class).getWorldPosition() == null) {
             return;
         }
         
         Vector3f playerPosition = new Vector3f(player.getComponent(LocationComponent.class).getWorldPosition());
-        for (EntityRef blockEntity : entityManager.getEntitiesWith(BouncyBlockComponent.class, LocationComponent.class))
-        {
+        for (EntityRef blockEntity : entityManager.getEntitiesWith(BouncyBlockComponent.class, LocationComponent.class)) {
             Vector3f blockPos = blockEntity.getComponent(LocationComponent.class).getWorldPosition();
-            if (blockPos != null && playerPosition != null)
-            {
+            if (blockPos != null && playerPosition != null) {
                 if (Math.round(playerPosition.x) == blockPos.x && Math.round(playerPosition.z) == blockPos.z
-                        && Math.round(playerPosition.y - 1) == blockPos.y)
-                {
+                        && Math.round(playerPosition.y - 1) == blockPos.y) {
                     Vector3f impulse = new Vector3f(0, blockEntity.getComponent(BouncyBlockComponent.class).force, 0);
                     player.send(new CharacterImpulseEvent(impulse));
                 }
