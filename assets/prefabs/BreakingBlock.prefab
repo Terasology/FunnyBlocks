@@ -1,0 +1,6 @@
+{
+  "name": "BreakingBlock",
+  "Breaking": {
+    "breakTime": 1000
+  }
+}

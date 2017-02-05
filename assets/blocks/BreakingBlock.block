@@ -1,0 +1,15 @@
+{
+  "attachmentAllowed" : true,
+  "shadowCasting" : false,
+  "rotation" : "horizontal",
+  "categories" : ["Breaking"],
+  "shapes" : ["engine:cube", "engine:stair", "engine:slope"],
+  "title" : "BreakingBlock",
+  "displayName": "BreakingBlock",
+  "doubleSided": true,
+  "entity": {
+    "prefab": "funnyBlocks:BreakingBlock",
+    "temporary" : false,
+    "keepActive" : true
+  }
+}
