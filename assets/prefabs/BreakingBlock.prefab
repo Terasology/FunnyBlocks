@@ -1,6 +1,14 @@
 {
   "name": "BreakingBlock",
   "Breaking": {
-    "breakTime": 1000
+    "breakTime": 1000,
+    "triggered": false
+  },
+  "Health": {
+    "maxHealth": 5,
+    "currentHealth": 5,
+    "regenRate": 0.0,
+    "waitBeforeRegen": 1.0,
+    "destroyEntityOnNoHealth": true
   }
 }

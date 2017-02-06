@@ -22,5 +22,7 @@ import org.terasology.entitySystem.Component;
  */
 
 public class BreakingComponent implements Component {
-    public int breakTime = 1000;
+    public float breakInterval = 1.0f;
+    public long breakTime = 0;
+    public boolean triggered = false;
 }
