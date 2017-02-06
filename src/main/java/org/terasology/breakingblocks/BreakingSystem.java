@@ -15,33 +15,26 @@
  */
 package org.terasology.breakingblocks;
 
-import com.google.common.collect.Lists;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.terasology.breakingblocks.component.BreakingComponent;
 import org.terasology.entitySystem.entity.EntityManager;
-import org.terasology.entitySystem.prefab.PrefabManager;
-import org.terasology.entitySystem.systems.UpdateSubscriberSystem;
-import org.terasology.logic.characters.CharacterImpulseEvent;
-import org.terasology.logic.common.ActivateEvent;
-import org.terasology.logic.health.*;
-import org.terasology.math.TeraMath;
-import org.terasology.math.geom.Vector3f;
 import org.terasology.entitySystem.entity.EntityRef;
 import org.terasology.entitySystem.event.ReceiveEvent;
+import org.terasology.entitySystem.prefab.PrefabManager;
 import org.terasology.entitySystem.systems.BaseComponentSystem;
 import org.terasology.entitySystem.systems.RegisterMode;
 import org.terasology.entitySystem.systems.RegisterSystem;
+import org.terasology.entitySystem.systems.UpdateSubscriberSystem;
 import org.terasology.logic.characters.CharacterMoveInputEvent;
+import org.terasology.logic.health.DoDamageEvent;
+import org.terasology.logic.health.EngineDamageTypes;
 import org.terasology.logic.location.LocationComponent;
+import org.terasology.math.TeraMath;
+import org.terasology.math.geom.Vector3f;
 import org.terasology.registry.In;
-import org.terasology.speedboostblocks.component.SpeedBoostComponent;
 import org.terasology.world.WorldProvider;
-import org.terasology.world.block.Block;
 import org.terasology.world.block.BlockComponent;
-import org.terasology.world.block.items.OnBlockItemPlaced;
-
-import java.util.List;
 
 /**
  * This class manages and controls Breaking blocks.
@@ -50,7 +43,7 @@ import java.util.List;
  */
 
 @RegisterSystem(RegisterMode.AUTHORITY)
-public class BreakingSystem extends BaseComponentSystem implements UpdateSubscriberSystem{
+public class BreakingSystem extends BaseComponentSystem implements UpdateSubscriberSystem {
     private static final Logger logger = LoggerFactory.getLogger(BreakingSystem.class);
 
     @In
@@ -114,11 +107,13 @@ public class BreakingSystem extends BaseComponentSystem implements UpdateSubscri
                     // Get the Breaking block's properties
                     BreakingComponent breakingComponent = entity.getComponent(BreakingComponent.class);
 
+                    // If block has not been walked over
                     if (!breakingComponent.triggered) {
+                        // Trigger destruction
                         breakingComponent.triggered = true;
+                        // Set time for next damage infliction
                         breakingComponent.breakTime = time.getGameTimeInMs() + TeraMath.floorToInt(breakingComponent.breakInterval * 1000);
                         entity.saveComponent(breakingComponent);
-                        logger.info("TRIGGERED");
                     }
                     // We've found a block underneath us so there is no need to continue looking
                     break;
@@ -133,11 +128,11 @@ public class BreakingSystem extends BaseComponentSystem implements UpdateSubscri
         for (EntityRef entity : entityManager.getEntitiesWith(BreakingComponent.class)) {
             BreakingComponent breakingComponent = entity.getComponent(BreakingComponent.class);
             long breakTime = breakingComponent.breakTime;
+            // Send damage event if worldTime exceeds breakTime
             if (time.getGameTimeInMs() >= breakTime && breakingComponent.triggered) {
-                logger.info("damaging");
+                // Reset breakTime to increment by breaKInterval
                 breakingComponent.breakTime = time.getGameTimeInMs() + TeraMath.floorToInt(breakingComponent.breakInterval * 1000);
                 entity.saveComponent(breakingComponent);
-                // Is PHYSICAL the correct damage type?
                 entity.send(new DoDamageEvent(1, EngineDamageTypes.PHYSICAL.get()));
             }
         }
