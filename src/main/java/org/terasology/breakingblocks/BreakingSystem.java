@@ -137,8 +137,8 @@ public class BreakingSystem extends BaseComponentSystem implements UpdateSubscri
                 logger.info("damaging");
                 breakingComponent.breakTime = time.getGameTimeInMs() + TeraMath.floorToInt(breakingComponent.breakInterval * 1000);
                 entity.saveComponent(breakingComponent);
-                // Is Direct the correct damage type?
-                entity.send(new DoDamageEvent(1, EngineDamageTypes.DIRECT.get()));
+                // Is PHYSICAL the correct damage type?
+                entity.send(new DoDamageEvent(1, EngineDamageTypes.PHYSICAL.get()));
             }
         }
     }
