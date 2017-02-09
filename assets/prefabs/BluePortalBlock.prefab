@@ -1,0 +1,7 @@
+{
+  "name": "BluePortalBlock",
+  "PlaySoundAction": {
+    "sounds": "engine:click"
+  },
+  "BluePortal": {}
+}

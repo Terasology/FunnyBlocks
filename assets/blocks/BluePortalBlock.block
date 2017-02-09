@@ -1,0 +1,15 @@
+{
+  "attachmentAllowed" : true,
+  "shadowCasting" : false,
+  "rotation" : "horizontal",
+  "categories" : ["Portal"],
+  "shape" : "engine:cube",
+  "title" : "BluePortalBlock",
+  "displayName": "BluePortalBlock",
+  "doubleSided": true,
+  "entity": {
+    "prefab": "funnyBlocks:BluePortalBlock",
+    "temporary" : false,
+    "keepActive" : true
+  }
+}

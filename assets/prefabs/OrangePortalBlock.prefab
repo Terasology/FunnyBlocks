@@ -1,0 +1,7 @@
+{
+  "name": "OrangePortalBlock",
+  "PlaySoundAction": {
+    "sounds": "engine:click"
+  },
+  "OrangePortal": {}
+}

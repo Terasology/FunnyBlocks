@@ -1,0 +1,15 @@
+{
+  "attachmentAllowed" : true,
+  "shadowCasting" : false,
+  "rotation" : "horizontal",
+  "categories" : ["Portal"],
+  "shapes" : ["engine:cube"],
+  "title" : "OrangePortalBlock",
+  "displayName": "Portal Orange",
+  "doubleSided": true,
+  "entity": {
+    "prefab": "funnyBlocks:OrangePortalBlock",
+    "temporary" : false,
+    "keepActive" : true
+  }
+}
