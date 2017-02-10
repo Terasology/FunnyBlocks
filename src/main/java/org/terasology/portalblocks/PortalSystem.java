@@ -56,7 +56,7 @@ import java.util.List;
  */
 
 @RegisterSystem(RegisterMode.AUTHORITY)
-public class PortalSystem extends BaseComponentSystem {
+public class PortalSystem extends BaseComponentSystem{
 
     private static final Logger logger = LoggerFactory.getLogger(org.terasology.portalblocks.PortalSystem.class);
 
@@ -90,7 +90,7 @@ public class PortalSystem extends BaseComponentSystem {
     public void onCharacterMove(CharacterMoveInputEvent moveInputEvent, EntityRef player, LocationComponent location) {
 
 
-        EntityRef standingOnPortal, otherPortal;
+        EntityRef otherPortal;
 
         if (activatedPortalBlocks.size() != 2) {
             return;
@@ -121,12 +121,11 @@ public class PortalSystem extends BaseComponentSystem {
 
                 // If the block is underneath the player
                 if (Math.round(playerWorldLocation.y - 1) == entityWorldLocation.y) {
-//                    standingOnPortal = entity;
+                    // Get the other activated portal
                     otherPortal = activatedPortalBlocks.get(i == 0 ? 1 : 0);
-//                    logger.info("Standing on activated Portal at " + entity.getComponent(LocationComponent.class).getWorldPosition());
-//                    logger.info("Blue Portal Location:" + activatedBluePortal.getComponent(LocationComponent.class).getWorldPosition() + "Orange Portal Location: " + activatedOrangePortal.getComponent(LocationComponent.class).getWorldPosition());
+                    // Teleport destination should be around the exit portal
+                    // TODO: check if player can teleport i.e. blocks around are empty up to player height
                     Vector3f teleportDestination = otherPortal.getComponent(LocationComponent.class).getWorldPosition().add(1,1,1);
-//                    logger.info("nihal111: Dest-"+ teleportDestination);
                     localPlayer.getCharacterEntity().send(new CharacterTeleportEvent(teleportDestination));
                 }
                 // We've found a block underneath us so there is no need to continue looking
@@ -135,31 +134,41 @@ public class PortalSystem extends BaseComponentSystem {
         }
     }
 
+    /*
+     * On 'e' press, interaction with BluePortalBlock
+     */
     @ReceiveEvent(components = {BluePortalComponent.class})
     public void onBluePortalActivate(ActivateEvent event, EntityRef entity) {
 
+        // If the block is already activated
         if (entity.hasComponent(ActivePortalComponent.class)) {
-            localPlayer.getClientEntity().send(new NotificationMessageEvent("This portal is already activated. " + (activatedOrangePortal == null ? "Activate an Orange Portal to make pathway." : "Jump on top to teleport!"), localPlayer.getClientEntity()));
+            localPlayer.getClientEntity().send(new NotificationMessageEvent("This portal is already activated. " + (activatedOrangePortal == null ? "Activate an Orange Portal to complete pathway." : "Jump on top to teleport!"), localPlayer.getClientEntity()));
             return;
         }
 
+        // If there is a previously activated BluePortal, deactivate it
         if (activatedBluePortal != null)
             activatedBluePortal.removeComponent(ActivePortalComponent.class);
 
         entity.addComponent(new ActivePortalComponent());
-        localPlayer.getClientEntity().send(new NotificationMessageEvent("Activated Blue Portal. " + (activatedOrangePortal == null ? "Activate an Orange Portal to make pathway." : "Jump on top to teleport!"), localPlayer.getClientEntity()));
+        localPlayer.getClientEntity().send(new NotificationMessageEvent("Activated Blue Portal. " + (activatedOrangePortal == null ? "Activate an Orange Portal to complete pathway." : "Jump on top to teleport!"), localPlayer.getClientEntity()));
         activatedBluePortal = entity;
         updateActivatedPortals();
     }
 
+    /*
+     * On 'e' press, interaction with OrangePortalBlock
+     */
     @ReceiveEvent(components = {OrangePortalComponent.class})
     public void onOrangePortalActivate(ActivateEvent event, EntityRef entity) {
 
+        // If the block is already activated
         if (entity.hasComponent(ActivePortalComponent.class)) {
             localPlayer.getClientEntity().send(new NotificationMessageEvent("This portal is already activated. " + (activatedBluePortal == null ? "Activate a Blue Portal to make pathway." : "Jump on top to teleport!"), localPlayer.getClientEntity()));
             return;
         }
 
+        // If there is a previously activated OrangePortal, deactivate it
         if (activatedOrangePortal != null)
             activatedOrangePortal.removeComponent(ActivePortalComponent.class);
 
@@ -169,6 +178,7 @@ public class PortalSystem extends BaseComponentSystem {
         updateActivatedPortals();
     }
 
+    // Updates the activatedPortalBlocks list
     private void updateActivatedPortals() {
         activatedPortalBlocks = com.google.common.collect.Lists.newArrayList();
         if (activatedBluePortal != null)
@@ -177,8 +187,12 @@ public class PortalSystem extends BaseComponentSystem {
             activatedPortalBlocks.add(activatedOrangePortal);
     }
 
+    /*
+     * This should fetch activated portal blocks when world generation is complete.
+     * Activated portal block entities are registered as activatedBluePortal and activatedOrangePortal
+     */
     @ReceiveEvent
-    public void initialise(OnPlayerSpawnedEvent event, EntityRef entityRef) {
+    public void initialise(OnChunkLoaded event, EntityRef entityRef) {
         activatedPortalBlocks = com.google.common.collect.Lists.newArrayList();
         activatedBluePortal = null;
         activatedOrangePortal = null;
