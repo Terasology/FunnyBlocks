@@ -19,27 +19,33 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.terasology.entitySystem.entity.EntityManager;
 import org.terasology.entitySystem.entity.EntityRef;
-import org.terasology.entitySystem.event.EventPriority;
+import org.terasology.entitySystem.entity.lifecycleEvents.OnAddedComponent;
 import org.terasology.entitySystem.event.ReceiveEvent;
 import org.terasology.entitySystem.prefab.PrefabManager;
 import org.terasology.entitySystem.systems.BaseComponentSystem;
 import org.terasology.entitySystem.systems.RegisterMode;
 import org.terasology.entitySystem.systems.RegisterSystem;
 import org.terasology.entitySystem.systems.UpdateSubscriberSystem;
+import org.terasology.logic.characters.CharacterComponent;
 import org.terasology.logic.characters.CharacterMoveInputEvent;
 import org.terasology.logic.characters.CharacterMovementComponent;
+import org.terasology.logic.characters.CharacterTeleportEvent;
 import org.terasology.logic.characters.events.OnEnterBlockEvent;
 import org.terasology.logic.common.ActivateEvent;
 import org.terasology.logic.location.LocationComponent;
 import org.terasology.logic.notifications.NotificationMessageEvent;
 import org.terasology.logic.players.LocalPlayer;
+import org.terasology.logic.players.event.OnPlayerSpawnedEvent;
 import org.terasology.math.geom.Vector3f;
+import org.terasology.network.ClientComponent;
 import org.terasology.portalblocks.component.ActivePortalComponent;
 import org.terasology.portalblocks.component.BluePortalComponent;
 import org.terasology.portalblocks.component.OrangePortalComponent;
+import org.terasology.protobuf.EntityData;
 import org.terasology.registry.In;
-import org.terasology.speedboostblocks.component.SpeedBoostComponent;
 import org.terasology.world.WorldProvider;
+import org.terasology.world.block.OnActivatedBlocks;
+import org.terasology.world.chunks.event.OnChunkLoaded;
 
 import java.util.List;
 
@@ -50,9 +56,9 @@ import java.util.List;
  */
 
 @RegisterSystem(RegisterMode.AUTHORITY)
-public class PortalSystem extends BaseComponentSystem implements UpdateSubscriberSystem {
+public class PortalSystem extends BaseComponentSystem {
 
-    private static final Logger logger = LoggerFactory.getLogger(org.terasology.breakingblocks.BreakingSystem.class);
+    private static final Logger logger = LoggerFactory.getLogger(org.terasology.portalblocks.PortalSystem.class);
 
     private List<EntityRef> activatedPortalBlocks;
 
@@ -101,7 +107,7 @@ public class PortalSystem extends BaseComponentSystem implements UpdateSubscribe
 
 
         // Iterate through all the activated portal blocks
-        for (int i = 0; i < 2; i++) {
+        for (int i = 0; i < activatedPortalBlocks.size(); i++) {
             EntityRef entity = activatedPortalBlocks.get(i);
 
             // Get the block's location data
@@ -115,9 +121,13 @@ public class PortalSystem extends BaseComponentSystem implements UpdateSubscribe
 
                 // If the block is underneath the player
                 if (Math.round(playerWorldLocation.y - 1) == entityWorldLocation.y) {
-                    standingOnPortal = entity;
+//                    standingOnPortal = entity;
                     otherPortal = activatedPortalBlocks.get(i == 0 ? 1 : 0);
-                    logger.info("Standing on activated Portal");
+//                    logger.info("Standing on activated Portal at " + entity.getComponent(LocationComponent.class).getWorldPosition());
+//                    logger.info("Blue Portal Location:" + activatedBluePortal.getComponent(LocationComponent.class).getWorldPosition() + "Orange Portal Location: " + activatedOrangePortal.getComponent(LocationComponent.class).getWorldPosition());
+                    Vector3f teleportDestination = otherPortal.getComponent(LocationComponent.class).getWorldPosition().add(1,1,1);
+//                    logger.info("nihal111: Dest-"+ teleportDestination);
+                    localPlayer.getCharacterEntity().send(new CharacterTeleportEvent(teleportDestination));
                 }
                 // We've found a block underneath us so there is no need to continue looking
                 break;
@@ -129,7 +139,7 @@ public class PortalSystem extends BaseComponentSystem implements UpdateSubscribe
     public void onBluePortalActivate(ActivateEvent event, EntityRef entity) {
 
         if (entity.hasComponent(ActivePortalComponent.class)) {
-            entity.send(new NotificationMessageEvent("This portal is already activated!", localPlayer.getCharacterEntity()));
+            localPlayer.getClientEntity().send(new NotificationMessageEvent("This portal is already activated. " + (activatedOrangePortal == null ? "Activate an Orange Portal to make pathway." : "Jump on top to teleport!"), localPlayer.getClientEntity()));
             return;
         }
 
@@ -137,7 +147,7 @@ public class PortalSystem extends BaseComponentSystem implements UpdateSubscribe
             activatedBluePortal.removeComponent(ActivePortalComponent.class);
 
         entity.addComponent(new ActivePortalComponent());
-        entity.send(new NotificationMessageEvent("Activated blue portal", localPlayer.getClientEntity()));
+        localPlayer.getClientEntity().send(new NotificationMessageEvent("Activated Blue Portal. " + (activatedOrangePortal == null ? "Activate an Orange Portal to make pathway." : "Jump on top to teleport!"), localPlayer.getClientEntity()));
         activatedBluePortal = entity;
         updateActivatedPortals();
     }
@@ -146,7 +156,7 @@ public class PortalSystem extends BaseComponentSystem implements UpdateSubscribe
     public void onOrangePortalActivate(ActivateEvent event, EntityRef entity) {
 
         if (entity.hasComponent(ActivePortalComponent.class)) {
-            entity.send(new NotificationMessageEvent("This portal is already activated!", localPlayer.getClientEntity()));
+            localPlayer.getClientEntity().send(new NotificationMessageEvent("This portal is already activated. " + (activatedBluePortal == null ? "Activate a Blue Portal to make pathway." : "Jump on top to teleport!"), localPlayer.getClientEntity()));
             return;
         }
 
@@ -154,19 +164,21 @@ public class PortalSystem extends BaseComponentSystem implements UpdateSubscribe
             activatedOrangePortal.removeComponent(ActivePortalComponent.class);
 
         entity.addComponent(new ActivePortalComponent());
-        entity.send(new NotificationMessageEvent("Activated orange portal", localPlayer.getClientEntity()));
+        localPlayer.getClientEntity().send(new NotificationMessageEvent("Activated Orange Portal. " + (activatedBluePortal == null ? "Activate a Blue Portal to make pathway." : "Jump on top to teleport!"), localPlayer.getClientEntity()));
         activatedOrangePortal = entity;
         updateActivatedPortals();
     }
 
     private void updateActivatedPortals() {
         activatedPortalBlocks = com.google.common.collect.Lists.newArrayList();
-        activatedPortalBlocks.add(activatedBluePortal);
-        activatedPortalBlocks.add(activatedOrangePortal);
+        if (activatedBluePortal != null)
+            activatedPortalBlocks.add(activatedBluePortal);
+        if (activatedOrangePortal != null)
+            activatedPortalBlocks.add(activatedOrangePortal);
     }
 
-    @Override
-    public void initialise(){
+    @ReceiveEvent
+    public void initialise(OnPlayerSpawnedEvent event, EntityRef entityRef) {
         activatedPortalBlocks = com.google.common.collect.Lists.newArrayList();
         activatedBluePortal = null;
         activatedOrangePortal = null;
@@ -203,12 +215,6 @@ public class PortalSystem extends BaseComponentSystem implements UpdateSubscribe
                 activatedOrangePortal = entity;
             }
         }
-
-
-    }
-
-    @Override
-    public void update(float delta) {
-
+        logger.info("nihal111: Blue-" + (activatedBluePortal != null) + " Orange-" + (activatedOrangePortal != null));
     }
 }
