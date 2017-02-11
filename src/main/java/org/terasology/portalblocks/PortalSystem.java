@@ -31,7 +31,9 @@ import org.terasology.logic.characters.CharacterMoveInputEvent;
 import org.terasology.logic.characters.CharacterMovementComponent;
 import org.terasology.logic.characters.CharacterTeleportEvent;
 import org.terasology.logic.characters.events.OnEnterBlockEvent;
+import org.terasology.logic.characters.events.VerticalCollisionEvent;
 import org.terasology.logic.common.ActivateEvent;
+import org.terasology.logic.health.DestroyEvent;
 import org.terasology.logic.location.LocationComponent;
 import org.terasology.logic.notifications.NotificationMessageEvent;
 import org.terasology.logic.players.LocalPlayer;
@@ -50,19 +52,22 @@ import org.terasology.world.chunks.event.OnChunkLoaded;
 import java.util.List;
 
 /**
- * This class manages and controls Breaking blocks.
- * <p>
- * <p>BreakingBlocks break after a while when you move over them.</p>
+ * This class manages and controls Portal blocks.
+ * <p>Portal Blocks allow you to teleport from A to B.</p>
+ * <p>There are two types of Portal blocks- blue and orange.
+ * Only one of each can remain activated at once resulting in a discrete pathway.</p>
  */
 
 @RegisterSystem(RegisterMode.AUTHORITY)
 public class PortalSystem extends BaseComponentSystem{
 
-    private static final Logger logger = LoggerFactory.getLogger(org.terasology.portalblocks.PortalSystem.class);
+    private static final Logger logger = LoggerFactory.getLogger(PortalSystem.class);
 
     private List<EntityRef> activatedPortalBlocks;
 
     private EntityRef activatedBluePortal, activatedOrangePortal;
+
+    private EntityRef activatedPortals = EntityRef.NULL;
 
     @In
     private EntityManager entityManager;
@@ -87,7 +92,7 @@ public class PortalSystem extends BaseComponentSystem{
      * @param location       The player's location.
      */
     @ReceiveEvent(components = {LocationComponent.class, CharacterMovementComponent.class})
-    public void onCharacterMove(CharacterMoveInputEvent moveInputEvent, EntityRef player, LocationComponent location) {
+    public void onCharacterMove(VerticalCollisionEvent moveInputEvent, EntityRef player, LocationComponent location) {
 
 
         EntityRef otherPortal;
@@ -164,7 +169,7 @@ public class PortalSystem extends BaseComponentSystem{
 
         // If the block is already activated
         if (entity.hasComponent(ActivePortalComponent.class)) {
-            localPlayer.getClientEntity().send(new NotificationMessageEvent("This portal is already activated. " + (activatedBluePortal == null ? "Activate a Blue Portal to make pathway." : "Jump on top to teleport!"), localPlayer.getClientEntity()));
+            localPlayer.getClientEntity().send(new NotificationMessageEvent("This portal is already activated. " + (activatedBluePortal == null ? "Activate a Blue Portal to complete pathway." : "Jump on top to teleport!"), localPlayer.getClientEntity()));
             return;
         }
 
@@ -173,7 +178,7 @@ public class PortalSystem extends BaseComponentSystem{
             activatedOrangePortal.removeComponent(ActivePortalComponent.class);
 
         entity.addComponent(new ActivePortalComponent());
-        localPlayer.getClientEntity().send(new NotificationMessageEvent("Activated Orange Portal. " + (activatedBluePortal == null ? "Activate a Blue Portal to make pathway." : "Jump on top to teleport!"), localPlayer.getClientEntity()));
+        localPlayer.getClientEntity().send(new NotificationMessageEvent("Activated Orange Portal. " + (activatedBluePortal == null ? "Activate a Blue Portal to complete pathway." : "Jump on top to teleport!"), localPlayer.getClientEntity()));
         activatedOrangePortal = entity;
         updateActivatedPortals();
     }
@@ -192,7 +197,7 @@ public class PortalSystem extends BaseComponentSystem{
      * Activated portal block entities are registered as activatedBluePortal and activatedOrangePortal
      */
     @ReceiveEvent
-    public void initialise(OnChunkLoaded event, EntityRef entityRef) {
+    public void initialiseActivatedBlocks(OnChunkLoaded event, EntityRef entityRef) {
         activatedPortalBlocks = com.google.common.collect.Lists.newArrayList();
         activatedBluePortal = null;
         activatedOrangePortal = null;
@@ -230,5 +235,14 @@ public class PortalSystem extends BaseComponentSystem{
             }
         }
         logger.info("nihal111: Blue-" + (activatedBluePortal != null) + " Orange-" + (activatedOrangePortal != null));
+    }
+
+    @ReceiveEvent(components = ActivePortalComponent.class)
+    public void onDestroy(DestroyEvent event, EntityRef entity) {
+        if (entity.hasComponent(BluePortalComponent.class))
+            activatedBluePortal = null;
+        else
+            activatedOrangePortal = null;
+        updateActivatedPortals();
     }
 }
