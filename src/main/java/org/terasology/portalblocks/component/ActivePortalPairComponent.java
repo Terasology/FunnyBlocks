@@ -19,6 +19,6 @@ import org.terasology.entitySystem.Component;
 import org.terasology.math.geom.Vector3f;
 
 public class ActivePortalPairComponent implements Component {
-    public Vector3f redPortalLocation;
+    public Vector3f orangePortalLocation;
     public Vector3f bluePortalLocation;
 }
