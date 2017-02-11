@@ -129,7 +129,8 @@ public class PortalSystem extends BaseComponentSystem {
         entity.addComponent(new ActivePortalComponent());
         localPlayer.getClientEntity().send(new NotificationMessageEvent("Activated Blue Portal. " + (!activatedOrangePortal ? "Activate an Orange Portal to complete pathway." : "Jump on top to teleport!"), localPlayer.getClientEntity()));
 
-        activatedPortals.getComponent(ActivePortalPairComponent.class).bluePortalLocation = entity.getComponent(LocationComponent.class).getWorldPosition();
+        activePortalPairComponent.bluePortalLocation = entity.getComponent(LocationComponent.class).getWorldPosition();
+        activatedPortals.addOrSaveComponent(activePortalPairComponent);
     }
 
     /*
@@ -154,7 +155,8 @@ public class PortalSystem extends BaseComponentSystem {
         entity.addComponent(new ActivePortalComponent());
         localPlayer.getClientEntity().send(new NotificationMessageEvent("Activated Orange Portal. " + (!activatedBluePortal ? "Activate a Blue Portal to complete pathway." : "Jump on top to teleport!"), localPlayer.getClientEntity()));
 
-        activatedPortals.getComponent(ActivePortalPairComponent.class).orangePortalLocation = entity.getComponent(LocationComponent.class).getWorldPosition();
+        activePortalPairComponent.orangePortalLocation = entity.getComponent(LocationComponent.class).getWorldPosition();
+        activatedPortals.addOrSaveComponent(activePortalPairComponent);
     }
 
 
@@ -169,7 +171,7 @@ public class PortalSystem extends BaseComponentSystem {
             activePortalPairComponent.orangePortalLocation = null;
             activatedPortals.addOrSaveComponent(activePortalPairComponent);
         } else {
-            logger.info("Jagger!");
+            activatedPortals = entityManager.getEntitiesWith(ActivePortalPairComponent.class).iterator().next();
 
         }
     }
