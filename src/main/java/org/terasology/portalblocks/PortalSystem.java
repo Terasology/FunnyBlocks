@@ -104,6 +104,7 @@ public class PortalSystem extends BaseComponentSystem {
         if (oldPosition != null && !roundedPosition.equals(oldPosition)) {
             oldPosition = roundedPosition;
         } else {
+            oldPosition = roundedPosition;
             return;
         }
 
