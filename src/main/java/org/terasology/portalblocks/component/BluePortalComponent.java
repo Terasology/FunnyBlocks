@@ -16,11 +16,13 @@
 package org.terasology.portalblocks.component;
 
 import org.terasology.entitySystem.Component;
+import org.terasology.network.Replicate;
 
 /**
  * This component holds the data for a Breaking block.
  */
 
+@Replicate
 public class BluePortalComponent implements Component {
 
     // Stores whether block is activated

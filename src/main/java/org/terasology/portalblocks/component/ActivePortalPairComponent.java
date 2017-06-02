@@ -17,7 +17,9 @@ package org.terasology.portalblocks.component;
 
 import org.terasology.entitySystem.Component;
 import org.terasology.math.geom.Vector3i;
+import org.terasology.network.Replicate;
 
+@Replicate
 public class ActivePortalPairComponent implements Component {
     public Vector3i orangePortalLocation;
     public Vector3i bluePortalLocation;

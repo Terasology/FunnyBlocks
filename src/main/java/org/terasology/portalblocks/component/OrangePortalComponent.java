@@ -16,7 +16,9 @@
 package org.terasology.portalblocks.component;
 
 import org.terasology.entitySystem.Component;
+import org.terasology.network.Replicate;
 
+@Replicate
 public class OrangePortalComponent implements Component {
 
     // Stores whether block is activated
