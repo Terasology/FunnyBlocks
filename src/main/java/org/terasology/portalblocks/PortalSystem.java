@@ -52,7 +52,7 @@ import org.terasology.world.block.BlockComponent;
  * Only one of each can remain activated at once resulting in a discrete pathway.</p>
  */
 
-@RegisterSystem(RegisterMode.CLIENT)
+@RegisterSystem
 public class PortalSystem extends BaseComponentSystem {
 
     private static final Logger logger = LoggerFactory.getLogger(PortalSystem.class);
@@ -154,7 +154,6 @@ public class PortalSystem extends BaseComponentSystem {
      */
     @ReceiveEvent(components = {BluePortalComponent.class})
     public void onBluePortalActivate(ActivateEvent event, EntityRef entity) {
-
         ActivePortalPairComponent activePortalPairComponent = activatedPortals.getComponent(ActivePortalPairComponent.class);
         boolean activatedOrangePortal = activePortalPairComponent.orangePortalLocation != null;
         boolean activatedBluePortal = activePortalPairComponent.bluePortalLocation != null;
@@ -184,7 +183,6 @@ public class PortalSystem extends BaseComponentSystem {
      */
     @ReceiveEvent(components = {OrangePortalComponent.class})
     public void onOrangePortalActivate(ActivateEvent event, EntityRef entity) {
-
         ActivePortalPairComponent activePortalPairComponent = activatedPortals.getComponent(ActivePortalPairComponent.class);
         boolean activatedOrangePortal = activePortalPairComponent.orangePortalLocation != null;
         boolean activatedBluePortal = activePortalPairComponent.bluePortalLocation != null;
