@@ -34,6 +34,7 @@ import org.terasology.logic.notifications.NotificationMessageEvent;
 import org.terasology.logic.players.LocalPlayer;
 import org.terasology.math.geom.Vector3f;
 import org.terasology.math.geom.Vector3i;
+import org.terasology.network.ClientComponent;
 import org.terasology.portalblocks.component.ActivePortalComponent;
 import org.terasology.portalblocks.component.ActivePortalPairComponent;
 import org.terasology.portalblocks.component.BluePortalComponent;
@@ -51,7 +52,7 @@ import org.terasology.world.block.BlockComponent;
  * Only one of each can remain activated at once resulting in a discrete pathway.</p>
  */
 
-@RegisterSystem(RegisterMode.AUTHORITY)
+@RegisterSystem(RegisterMode.CLIENT)
 public class PortalSystem extends BaseComponentSystem {
 
     private static final Logger logger = LoggerFactory.getLogger(PortalSystem.class);
@@ -68,9 +69,6 @@ public class PortalSystem extends BaseComponentSystem {
 
     @In
     private BlockEntityRegistry blockEntityProvider;
-
-    @In
-    private LocalPlayer localPlayer;
 
     @In
     private PrefabManager prefabManager;
@@ -117,9 +115,9 @@ public class PortalSystem extends BaseComponentSystem {
         // Check if the block under the player is a portal block and initiate teleportation
         Vector3i positionBlockUnder = new Vector3i(0, -1, 0).add(roundedPosition);
         if (activePortalPairComponent.bluePortalLocation.equals(positionBlockUnder)) {
-            teleport(activePortalPairComponent.orangePortalLocation.toVector3f(), localPlayer.getCharacterEntity());
+            teleport(activePortalPairComponent.orangePortalLocation.toVector3f(), player);
         } else if (activePortalPairComponent.orangePortalLocation.equals(positionBlockUnder)) {
-            teleport(activePortalPairComponent.bluePortalLocation.toVector3f(), localPlayer.getCharacterEntity());
+            teleport(activePortalPairComponent.bluePortalLocation.toVector3f(), player);
         }
     }
 
@@ -140,7 +138,7 @@ public class PortalSystem extends BaseComponentSystem {
                             }
                         }
                         if (j == Math.ceil(playerHeight)) {
-                            localPlayer.getCharacterEntity().send(new CharacterTeleportEvent(finalDestination.addY(1)));
+                            character.send(new CharacterTeleportEvent(finalDestination.addY(1)));
                             return;
                         }
                     }
@@ -148,7 +146,7 @@ public class PortalSystem extends BaseComponentSystem {
                 }
             }
         }
-        localPlayer.getClientEntity().send(new NotificationMessageEvent("Could not teleport to the other portal as there is no space around it!", localPlayer.getClientEntity()));
+        character.getOwner().send(new NotificationMessageEvent("Could not teleport to the other portal as there is no space around it!", character));
     }
 
     /*
@@ -160,10 +158,11 @@ public class PortalSystem extends BaseComponentSystem {
         ActivePortalPairComponent activePortalPairComponent = activatedPortals.getComponent(ActivePortalPairComponent.class);
         boolean activatedOrangePortal = activePortalPairComponent.orangePortalLocation != null;
         boolean activatedBluePortal = activePortalPairComponent.bluePortalLocation != null;
+        EntityRef client = event.getInstigator().getOwner();
 
         // If the block is already activated, do nothing
         if (entity.hasComponent(ActivePortalComponent.class)) {
-            localPlayer.getClientEntity().send(new NotificationMessageEvent("This portal is already activated. " + (!activatedOrangePortal ? "Activate an Orange Portal to complete pathway." : "Jump on top to teleport!"), localPlayer.getClientEntity()));
+            client.send(new NotificationMessageEvent("This portal is already activated. " + (!activatedOrangePortal ? "Activate an Orange Portal to complete pathway." : "Jump on top to teleport!"), client));
             return;
         }
 
@@ -173,7 +172,7 @@ public class PortalSystem extends BaseComponentSystem {
         }
 
         entity.addComponent(new ActivePortalComponent());
-        localPlayer.getClientEntity().send(new NotificationMessageEvent("Activated Blue Portal. " + (!activatedOrangePortal ? "Activate an Orange Portal to complete pathway." : "Jump on top to teleport!"), localPlayer.getClientEntity()));
+        client.send(new NotificationMessageEvent("Activated Blue Portal. " + (!activatedOrangePortal ? "Activate an Orange Portal to complete pathway." : "Jump on top to teleport!"), client));
 
         // Update activatedPortals entity to store the new location of bluePortalBlock
         activePortalPairComponent.bluePortalLocation = entity.getComponent(BlockComponent.class).getPosition();
@@ -189,10 +188,11 @@ public class PortalSystem extends BaseComponentSystem {
         ActivePortalPairComponent activePortalPairComponent = activatedPortals.getComponent(ActivePortalPairComponent.class);
         boolean activatedOrangePortal = activePortalPairComponent.orangePortalLocation != null;
         boolean activatedBluePortal = activePortalPairComponent.bluePortalLocation != null;
+        EntityRef client = event.getInstigator().getOwner();
 
         // If the block is already activated, do nothing
         if (entity.hasComponent(ActivePortalComponent.class)) {
-            localPlayer.getClientEntity().send(new NotificationMessageEvent("This portal is already activated. " + (!activatedBluePortal ? "Activate a Blue Portal to complete pathway." : "Jump on top to teleport!"), localPlayer.getClientEntity()));
+            client.send(new NotificationMessageEvent("This portal is already activated. " + (!activatedBluePortal ? "Activate a Blue Portal to complete pathway." : "Jump on top to teleport!"), client));
             return;
         }
 
@@ -201,7 +201,7 @@ public class PortalSystem extends BaseComponentSystem {
             worldProvider.getBlock(activePortalPairComponent.orangePortalLocation).getEntity().removeComponent(ActivePortalComponent.class);
 
         entity.addComponent(new ActivePortalComponent());
-        localPlayer.getClientEntity().send(new NotificationMessageEvent("Activated Orange Portal. " + (!activatedBluePortal ? "Activate a Blue Portal to complete pathway." : "Jump on top to teleport!"), localPlayer.getClientEntity()));
+        client.send(new NotificationMessageEvent("Activated Orange Portal. " + (!activatedBluePortal ? "Activate a Blue Portal to complete pathway." : "Jump on top to teleport!"), client));
 
         // Update activatedPortals entity to store the new location of orangePortalBlock
         activePortalPairComponent.orangePortalLocation = entity.getComponent(BlockComponent.class).getPosition();
