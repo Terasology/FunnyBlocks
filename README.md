@@ -19,7 +19,7 @@ From left to right:
 ## Playing
 After installing and activating this module in a new world you have two options as to how to access the Funny Blocks:
 1. Install and activate a world generator that includes some of these blocks (see [FunnyGenerator](https://github.com/NicholasBatesNZ/FunnyGenerators) as an example). The blocks will be spawned in the world automatically.
-2. Press the \` key and enter the command `give BlockName` where "BlockName" is the name of the desired block as taken from the list above. This block will appear in your inventory.
+2. Press the ~ key and enter the command `give BlockName` where "BlockName" is the name of the desired block as taken from the list above. This block will appear in your inventory.
 
 ## Contributors
 Authors can be found in the [module.txt](https://github.com/Terasology/FunnyBlocks/blob/master/module.txt)
