@@ -1,7 +1,8 @@
 # Funny Blocks
 This module adds several random, funny and goofy blocks to make [Terasology](https://github.com/MovingBlocks/Terasology) even more awesome!
 
-![Funny Blocks](https://s13.postimg.org/ee79vl6mv/2018-01-08_6.png)
+![Funny Blocks](https://raw.githubusercontent.com/wiki/Terasology/FunnyBlocks/FunnyBlocks.png)
+
 From left to right:
 
 - BreakingBlock - Begins to break when the player stands on top of it
