@@ -3,7 +3,7 @@
     "attachmentAllowed" : false,
 	"shadowCasting" : false,
 	"penetrable": true,
-	"rotation" : "Horizontal",
+	"family" : "Horizontal",
 	"shape" : "funnyBlocks:SpeedBooster",
 	"tile" : "funnyBlocks:SpeedBooster",
 	"entity" : {

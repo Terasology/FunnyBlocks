@@ -3,7 +3,7 @@
   "attachmentAllowed" : false,
   "shadowCasting" : false,
   "penetrable": true,
-  "rotation" : "None",
+  "family" : "None",
   "tile" : "funnyBlocks:TrampolineTile",
   "entity" : {
     "prefab" : "funnyBlocks:Trampoline"

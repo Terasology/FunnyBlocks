@@ -1,7 +1,7 @@
 {
   "attachmentAllowed" : true,
   "shadowCasting" : false,
-  "rotation" : "horizontal",
+  "family" : "horizontal",
   "categories" : ["Breaking"],
   "shapes" : ["engine:cube", "engine:stair", "engine:slope"],
   "title" : "BreakingBlock",

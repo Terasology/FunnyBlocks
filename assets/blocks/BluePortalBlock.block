@@ -1,7 +1,7 @@
 {
   "attachmentAllowed" : true,
   "shadowCasting" : false,
-  "rotation" : "horizontal",
+  "family" : "horizontal",
   "categories" : ["Portal"],
   "shape" : "engine:cube",
   "title" : "BluePortalBlock",

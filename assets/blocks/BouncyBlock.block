@@ -2,7 +2,7 @@
     "displayName": "BouncyBlock",
     "attachmentAllowed" : true,
     "shadowCasting" : false,
-    "rotation" : "horizontal",
+    "family" : "horizontal",
     "categories" : ["BouncyBlock"],
     "hardness": 15,
     "tiles": {
