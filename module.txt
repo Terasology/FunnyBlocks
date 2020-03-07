@@ -5,7 +5,7 @@
     "displayName" : "Funny Blocks",
     "description" : "A module adding funny/random goofy blocks just because they are awesome!",
     "dependencies" : [
-        {"id": "Core", "minVersion": "2.0.0"}
+        {"id": "Core", "minVersion": "3.0.0"}
     ],
     "isServerSideOnly" : false
 }
