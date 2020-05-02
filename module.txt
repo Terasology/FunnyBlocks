@@ -1,11 +1,10 @@
 {
     "id" : "FunnyBlocks",
-    "version" : "0.2.2-SNAPSHOT",
+    "version" : "0.3.0",
     "author" : "A'nW, BenjaminAmos, DarkKeks, ElBatanony, Eric Banisadr, Setako",
     "displayName" : "Funny Blocks",
     "description" : "A module adding funny/random goofy blocks just because they are awesome!",
-    "dependencies" : [
-        {"id": "Core", "minVersion": "3.0.0"}
-    ],
-    "isServerSideOnly" : false
+    "dependencies" : [],
+    "isServerSideOnly" : false,
+    "isSpecial": true
 }
