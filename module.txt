@@ -4,7 +4,9 @@
     "author" : "A'nW, BenjaminAmos, DarkKeks, ElBatanony, Eric Banisadr, Setako",
     "displayName" : "Funny Blocks",
     "description" : "A module adding funny/random goofy blocks just because they are awesome!",
-    "dependencies" : [],
+    "dependencies" : [
+        {"id" : "Health", "minVersion" : "0.1.0"}
+    ],
     "isServerSideOnly" : false,
     "isSpecial": true
 }
