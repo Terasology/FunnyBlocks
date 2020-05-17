@@ -1,11 +1,13 @@
 {
-    "id" : "FunnyBlocks",
-    "version" : "0.2.2-SNAPSHOT",
-    "author" : "A'nW, BenjaminAmos, DarkKeks, ElBatanony, Eric Banisadr, Setako",
-    "displayName" : "Funny Blocks",
-    "description" : "A module adding funny/random goofy blocks just because they are awesome!",
-    "dependencies" : [
-        {"id": "Core", "minVersion": "3.0.0"}
+    "id": "FunnyBlocks",
+    "version": "1.0.0",
+    "author": "A'nW, BenjaminAmos, DarkKeks, ElBatanony, Eric Banisadr, Setako",
+    "displayName": "Funny Blocks",
+    "description": "A module adding funny/random goofy blocks just because they are awesome!",
+    "dependencies": [
+        { "id": "Health", "minVersion": "1.0.0" }
     ],
-    "isServerSideOnly" : false
+    "isServerSideOnly": false,
+    "isSpecial": true,
+    "isAsset": true
 }
