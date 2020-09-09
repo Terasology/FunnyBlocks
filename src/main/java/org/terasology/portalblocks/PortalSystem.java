@@ -1,49 +1,33 @@
-/*
- * Copyright 2016 MovingBlocks
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *      http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
+// Copyright 2020 The Terasology Foundation
+// SPDX-License-Identifier: Apache-2.0
 package org.terasology.portalblocks;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.terasology.entitySystem.entity.EntityManager;
-import org.terasology.entitySystem.entity.EntityRef;
-import org.terasology.entitySystem.event.ReceiveEvent;
-import org.terasology.entitySystem.prefab.PrefabManager;
-import org.terasology.entitySystem.systems.BaseComponentSystem;
-import org.terasology.entitySystem.systems.RegisterMode;
-import org.terasology.entitySystem.systems.RegisterSystem;
-import org.terasology.logic.characters.CharacterMoveInputEvent;
-import org.terasology.logic.characters.CharacterMovementComponent;
-import org.terasology.logic.characters.CharacterTeleportEvent;
-import org.terasology.logic.common.ActivateEvent;
-import org.terasology.logic.health.DestroyEvent;
-import org.terasology.logic.location.LocationComponent;
-import org.terasology.logic.notifications.NotificationMessageEvent;
-import org.terasology.logic.players.LocalPlayer;
+import org.terasology.engine.entitySystem.entity.EntityManager;
+import org.terasology.engine.entitySystem.entity.EntityRef;
+import org.terasology.engine.entitySystem.event.ReceiveEvent;
+import org.terasology.engine.entitySystem.prefab.PrefabManager;
+import org.terasology.engine.entitySystem.systems.BaseComponentSystem;
+import org.terasology.engine.entitySystem.systems.RegisterSystem;
+import org.terasology.engine.logic.characters.CharacterMoveInputEvent;
+import org.terasology.engine.logic.characters.CharacterMovementComponent;
+import org.terasology.engine.logic.characters.CharacterTeleportEvent;
+import org.terasology.engine.logic.common.ActivateEvent;
+import org.terasology.engine.logic.destruction.DestroyEvent;
+import org.terasology.engine.logic.location.LocationComponent;
+import org.terasology.engine.logic.notifications.NotificationMessageEvent;
+import org.terasology.engine.registry.In;
+import org.terasology.engine.world.BlockEntityRegistry;
+import org.terasology.engine.world.WorldProvider;
+import org.terasology.engine.world.block.Block;
+import org.terasology.engine.world.block.BlockComponent;
 import org.terasology.math.geom.Vector3f;
 import org.terasology.math.geom.Vector3i;
-import org.terasology.network.ClientComponent;
 import org.terasology.portalblocks.component.ActivePortalComponent;
 import org.terasology.portalblocks.component.ActivePortalPairComponent;
 import org.terasology.portalblocks.component.BluePortalComponent;
 import org.terasology.portalblocks.component.OrangePortalComponent;
-import org.terasology.registry.In;
-import org.terasology.world.BlockEntityRegistry;
-import org.terasology.world.WorldProvider;
-import org.terasology.world.block.Block;
-import org.terasology.world.block.BlockComponent;
 
 /**
  * This class manages and controls Portal blocks.
@@ -74,14 +58,14 @@ public class PortalSystem extends BaseComponentSystem {
     private PrefabManager prefabManager;
 
     @In
-    private org.terasology.engine.Time time;
+    private org.terasology.engine.core.Time time;
 
     /**
      * This is called when the character is moving.
      *
      * @param moveInputEvent The details of the movement.
-     * @param player         The player entity.
-     * @param location       The player's location.
+     * @param player The player entity.
+     * @param location The player's location.
      */
     @ReceiveEvent(components = {LocationComponent.class, CharacterMovementComponent.class})
     public void onCharacterMove(CharacterMoveInputEvent moveInputEvent, EntityRef player, LocationComponent location) {
@@ -96,7 +80,8 @@ public class PortalSystem extends BaseComponentSystem {
         }
 
         // Check if the block under the player is a portal block and initiate teleportation
-        Vector3i roundedPosition = new Vector3i(Math.round(playerWorldLocation.x), Math.round(playerWorldLocation.y), Math.round(playerWorldLocation.z));
+        Vector3i roundedPosition = new Vector3i(Math.round(playerWorldLocation.x), Math.round(playerWorldLocation.y),
+                Math.round(playerWorldLocation.z));
 
         // continue only if there is a change in player position
         if (oldPosition != null && !roundedPosition.equals(oldPosition)) {
@@ -106,7 +91,8 @@ public class PortalSystem extends BaseComponentSystem {
             return;
         }
 
-        ActivePortalPairComponent activePortalPairComponent = activatedPortals.getComponent(ActivePortalPairComponent.class);
+        ActivePortalPairComponent activePortalPairComponent =
+                activatedPortals.getComponent(ActivePortalPairComponent.class);
 
         if (activePortalPairComponent.bluePortalLocation == null || activePortalPairComponent.orangePortalLocation == null) {
             return;
@@ -146,7 +132,8 @@ public class PortalSystem extends BaseComponentSystem {
                 }
             }
         }
-        character.getOwner().send(new NotificationMessageEvent("Could not teleport to the other portal as there is no space around it!", character));
+        character.getOwner().send(new NotificationMessageEvent("Could not teleport to the other portal as there is no" +
+                " space around it!", character));
     }
 
     /*
@@ -154,14 +141,16 @@ public class PortalSystem extends BaseComponentSystem {
      */
     @ReceiveEvent(components = {BluePortalComponent.class})
     public void onBluePortalActivate(ActivateEvent event, EntityRef entity) {
-        ActivePortalPairComponent activePortalPairComponent = activatedPortals.getComponent(ActivePortalPairComponent.class);
+        ActivePortalPairComponent activePortalPairComponent =
+                activatedPortals.getComponent(ActivePortalPairComponent.class);
         boolean activatedOrangePortal = activePortalPairComponent.orangePortalLocation != null;
         boolean activatedBluePortal = activePortalPairComponent.bluePortalLocation != null;
         EntityRef client = event.getInstigator().getOwner();
 
         // If the block is already activated, do nothing
         if (entity.hasComponent(ActivePortalComponent.class)) {
-            client.send(new NotificationMessageEvent("This portal is already activated. " + (!activatedOrangePortal ? "Activate an Orange Portal to complete pathway." : "Jump on top to teleport!"), client));
+            client.send(new NotificationMessageEvent("This portal is already activated. " + (!activatedOrangePortal ?
+                    "Activate an Orange Portal to complete pathway." : "Jump on top to teleport!"), client));
             return;
         }
 
@@ -171,7 +160,8 @@ public class PortalSystem extends BaseComponentSystem {
         }
 
         entity.addComponent(new ActivePortalComponent());
-        client.send(new NotificationMessageEvent("Activated Blue Portal. " + (!activatedOrangePortal ? "Activate an Orange Portal to complete pathway." : "Jump on top to teleport!"), client));
+        client.send(new NotificationMessageEvent("Activated Blue Portal. " + (!activatedOrangePortal ? "Activate an " +
+                "Orange Portal to complete pathway." : "Jump on top to teleport!"), client));
 
         // Update activatedPortals entity to store the new location of bluePortalBlock
         activePortalPairComponent.bluePortalLocation = entity.getComponent(BlockComponent.class).getPosition();
@@ -183,14 +173,16 @@ public class PortalSystem extends BaseComponentSystem {
      */
     @ReceiveEvent(components = {OrangePortalComponent.class})
     public void onOrangePortalActivate(ActivateEvent event, EntityRef entity) {
-        ActivePortalPairComponent activePortalPairComponent = activatedPortals.getComponent(ActivePortalPairComponent.class);
+        ActivePortalPairComponent activePortalPairComponent =
+                activatedPortals.getComponent(ActivePortalPairComponent.class);
         boolean activatedOrangePortal = activePortalPairComponent.orangePortalLocation != null;
         boolean activatedBluePortal = activePortalPairComponent.bluePortalLocation != null;
         EntityRef client = event.getInstigator().getOwner();
 
         // If the block is already activated, do nothing
         if (entity.hasComponent(ActivePortalComponent.class)) {
-            client.send(new NotificationMessageEvent("This portal is already activated. " + (!activatedBluePortal ? "Activate a Blue Portal to complete pathway." : "Jump on top to teleport!"), client));
+            client.send(new NotificationMessageEvent("This portal is already activated. " + (!activatedBluePortal ? 
+                    "Activate a Blue Portal to complete pathway." : "Jump on top to teleport!"), client));
             return;
         }
 
@@ -199,7 +191,8 @@ public class PortalSystem extends BaseComponentSystem {
             worldProvider.getBlock(activePortalPairComponent.orangePortalLocation).getEntity().removeComponent(ActivePortalComponent.class);
 
         entity.addComponent(new ActivePortalComponent());
-        client.send(new NotificationMessageEvent("Activated Orange Portal. " + (!activatedBluePortal ? "Activate a Blue Portal to complete pathway." : "Jump on top to teleport!"), client));
+        client.send(new NotificationMessageEvent("Activated Orange Portal. " + (!activatedBluePortal ? "Activate a " +
+                "Blue Portal to complete pathway." : "Jump on top to teleport!"), client));
 
         // Update activatedPortals entity to store the new location of orangePortalBlock
         activePortalPairComponent.orangePortalLocation = entity.getComponent(BlockComponent.class).getPosition();

@@ -1,48 +1,35 @@
-/*
- * Copyright 2016 MovingBlocks
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *      http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
+// Copyright 2020 The Terasology Foundation
+// SPDX-License-Identifier: Apache-2.0
 package org.terasology.accelerationblocks;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.terasology.accelerationblocks.component.AccelerationBlockComponent;
 import org.terasology.accelerationblocks.component.AccelerationComponent;
-import org.terasology.engine.Time;
-import org.terasology.entitySystem.entity.EntityManager;
-import org.terasology.entitySystem.entity.EntityRef;
-import org.terasology.entitySystem.event.ReceiveEvent;
-import org.terasology.entitySystem.systems.BaseComponentSystem;
-import org.terasology.entitySystem.systems.RegisterMode;
-import org.terasology.entitySystem.systems.RegisterSystem;
-import org.terasology.entitySystem.systems.UpdateSubscriberSystem;
-import org.terasology.logic.characters.CharacterImpulseEvent;
-import org.terasology.logic.characters.CharacterMovementComponent;
-import org.terasology.logic.characters.events.OnEnterBlockEvent;
-import org.terasology.logic.location.LocationComponent;
-import org.terasology.math.Side;
+import org.terasology.engine.core.Time;
+import org.terasology.engine.entitySystem.entity.EntityManager;
+import org.terasology.engine.entitySystem.entity.EntityRef;
+import org.terasology.engine.entitySystem.event.ReceiveEvent;
+import org.terasology.engine.entitySystem.systems.BaseComponentSystem;
+import org.terasology.engine.entitySystem.systems.RegisterMode;
+import org.terasology.engine.entitySystem.systems.RegisterSystem;
+import org.terasology.engine.entitySystem.systems.UpdateSubscriberSystem;
+import org.terasology.engine.logic.characters.CharacterImpulseEvent;
+import org.terasology.engine.logic.characters.CharacterMovementComponent;
+import org.terasology.engine.logic.characters.events.OnEnterBlockEvent;
+import org.terasology.engine.logic.location.LocationComponent;
+import org.terasology.engine.math.Side;
+import org.terasology.engine.registry.In;
+import org.terasology.engine.world.BlockEntityRegistry;
+import org.terasology.engine.world.WorldProvider;
+import org.terasology.engine.world.block.Block;
 import org.terasology.math.geom.Quat4f;
 import org.terasology.math.geom.Vector3f;
 import org.terasology.math.geom.Vector3i;
-import org.terasology.registry.In;
-import org.terasology.world.BlockEntityRegistry;
-import org.terasology.world.WorldProvider;
-import org.terasology.world.block.Block;
 
 /**
- * This system reacts on Entities passing through block with AccelerationBlockComponent, adding AccelerationComponent to them
- * All Entities with AccelerationComponent get acceleration
+ * This system reacts on Entities passing through block with AccelerationBlockComponent, adding AccelerationComponent to
+ * them All Entities with AccelerationComponent get acceleration
  */
 @RegisterSystem(RegisterMode.AUTHORITY)
 public class AccelerationSystem extends BaseComponentSystem implements UpdateSubscriberSystem {
@@ -59,6 +46,24 @@ public class AccelerationSystem extends BaseComponentSystem implements UpdateSub
 
     @In
     private WorldProvider worldProvider;
+
+    /**
+     * Generates rotation Quat
+     *
+     * @param x Rotation axis x
+     * @param y Rotation axis y
+     * @param z Rotation axis z
+     * @param angle Rotation angle
+     */
+    private static Quat4f getRotationQuat(int x, int y, int z, float angle) {
+        Quat4f result = new Quat4f();
+        float nw = (float) Math.cos(angle / 2);
+        float nx = x * (float) Math.sin(angle / 2);
+        float ny = y * (float) Math.sin(angle / 2);
+        float nz = z * (float) Math.sin(angle / 2);
+        result.set(nx, ny, nz, nw);
+        return result;
+    }
 
     @Override
     public void update(float delta) {
@@ -85,7 +90,8 @@ public class AccelerationSystem extends BaseComponentSystem implements UpdateSub
 
         Block block = event.getNewBlock();
         if (blockIsAccelerating(block)) {
-            AccelerationBlockComponent blockAcceleration = block.getEntity().getComponent(AccelerationBlockComponent.class);
+            AccelerationBlockComponent blockAcceleration =
+                    block.getEntity().getComponent(AccelerationBlockComponent.class);
             AccelerationComponent acceleration = entity.getComponent(AccelerationComponent.class);
 
             if (acceleration == null) {
@@ -106,12 +112,14 @@ public class AccelerationSystem extends BaseComponentSystem implements UpdateSub
         }
     }
 
-    private void initAcceleration(AccelerationComponent acceleration, AccelerationBlockComponent blockAcceleration, Side side) {
+    private void initAcceleration(AccelerationComponent acceleration, AccelerationBlockComponent blockAcceleration,
+                                  Side side) {
         Vector3f velocity = new Vector3f(blockAcceleration.velocity);
         if (!blockAcceleration.ignoreBlockDirection) {
             Vector3i originalDirection = Side.FRONT.getVector3i();
             Vector3i blockDirection = side.getVector3i();
-            double angle = Math.acos(originalDirection.getX() * blockDirection.getX() + originalDirection.getZ() * blockDirection.getZ());
+            double angle =
+                    Math.acos(originalDirection.getX() * blockDirection.getX() + originalDirection.getZ() * blockDirection.getZ());
 
             Vector3i rotAxis = Vector3i.up();
             Quat4f rotation = getRotationQuat(rotAxis.getX(), rotAxis.getY(), rotAxis.getZ(), (float) angle);
@@ -131,23 +139,6 @@ public class AccelerationSystem extends BaseComponentSystem implements UpdateSub
 
         acceleration.velocity = velocity;
         acceleration.ignoreBlockDirection = blockAcceleration.ignoreBlockDirection;
-    }
-
-    /**
-     * Generates rotation Quat
-     * @param x Rotation axis x
-     * @param y Rotation axis y
-     * @param z Rotation axis z
-     * @param angle Rotation angle
-     */
-    private static Quat4f getRotationQuat(int x, int y, int z, float angle) {
-        Quat4f result = new Quat4f();
-        float nw = (float) Math.cos(angle / 2);
-        float nx = x * (float) Math.sin(angle / 2);
-        float ny = y * (float) Math.sin(angle / 2);
-        float nz = z * (float) Math.sin(angle / 2);
-        result.set(nx, ny, nz, nw);
-        return result;
     }
 
     private boolean isAtHeadLevel(Vector3i relativePosition, EntityRef entity) {
