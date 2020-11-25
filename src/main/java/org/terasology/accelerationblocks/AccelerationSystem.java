@@ -31,6 +31,7 @@ import org.terasology.logic.characters.CharacterImpulseEvent;
 import org.terasology.logic.characters.CharacterMovementComponent;
 import org.terasology.logic.characters.events.OnEnterBlockEvent;
 import org.terasology.logic.location.LocationComponent;
+import org.terasology.math.JomlUtil;
 import org.terasology.math.Side;
 import org.terasology.math.geom.Quat4f;
 import org.terasology.math.geom.Vector3f;
@@ -72,7 +73,7 @@ public class AccelerationSystem extends BaseComponentSystem implements UpdateSub
 
     private void applyImpulse(AccelerationComponent acceleration, EntityRef entity) {
         Vector3f impulse = new Vector3f(acceleration.velocity);
-        entity.send(new CharacterImpulseEvent(impulse));
+        entity.send(new CharacterImpulseEvent(JomlUtil.from(impulse)));
     }
 
     @ReceiveEvent

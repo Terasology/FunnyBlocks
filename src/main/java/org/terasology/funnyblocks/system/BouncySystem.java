@@ -27,6 +27,7 @@ import org.terasology.entitySystem.event.ReceiveEvent;
 import org.terasology.logic.characters.CharacterImpulseEvent;
 import org.terasology.logic.characters.CharacterMoveInputEvent;
 import org.terasology.logic.location.LocationComponent;
+import org.terasology.math.JomlUtil;
 import org.terasology.math.geom.Vector3f;
 import org.terasology.registry.In;
 import org.terasology.world.BlockEntityRegistry;
@@ -64,7 +65,7 @@ public class BouncySystem extends BaseComponentSystem {
                 if (Math.round(playerPosition.x) == blockPos.x && Math.round(playerPosition.z) == blockPos.z
                         && Math.round(playerPosition.y - 1) == blockPos.y) {
                     Vector3f impulse = new Vector3f(0, blockEntity.getComponent(BouncyBlockComponent.class).force, 0);
-                    player.send(new CharacterImpulseEvent(impulse));
+                    player.send(new CharacterImpulseEvent(JomlUtil.from(impulse)));
                 }
             }
         }
