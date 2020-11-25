@@ -15,6 +15,8 @@
  */
 package org.terasology.portalblocks;
 
+import org.joml.Vector3f;
+import org.joml.Vector3i;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.terasology.entitySystem.entity.EntityManager;
@@ -22,7 +24,6 @@ import org.terasology.entitySystem.entity.EntityRef;
 import org.terasology.entitySystem.event.ReceiveEvent;
 import org.terasology.entitySystem.prefab.PrefabManager;
 import org.terasology.entitySystem.systems.BaseComponentSystem;
-import org.terasology.entitySystem.systems.RegisterMode;
 import org.terasology.entitySystem.systems.RegisterSystem;
 import org.terasology.logic.characters.CharacterMoveInputEvent;
 import org.terasology.logic.characters.CharacterMovementComponent;
@@ -31,10 +32,6 @@ import org.terasology.logic.common.ActivateEvent;
 import org.terasology.logic.health.DestroyEvent;
 import org.terasology.logic.location.LocationComponent;
 import org.terasology.logic.notifications.NotificationMessageEvent;
-import org.terasology.logic.players.LocalPlayer;
-import org.terasology.math.geom.Vector3f;
-import org.terasology.math.geom.Vector3i;
-import org.terasology.network.ClientComponent;
 import org.terasology.portalblocks.component.ActivePortalComponent;
 import org.terasology.portalblocks.component.ActivePortalPairComponent;
 import org.terasology.portalblocks.component.BluePortalComponent;
@@ -87,7 +84,7 @@ public class PortalSystem extends BaseComponentSystem {
     public void onCharacterMove(CharacterMoveInputEvent moveInputEvent, EntityRef player, LocationComponent location) {
 
         // Get the player's location
-        Vector3f playerWorldLocation = location.getWorldPosition();
+        Vector3f playerWorldLocation = location.getWorldPosition(new Vector3f());
 
         // If it doesn't exist
         if (playerWorldLocation == null) {
@@ -115,9 +112,9 @@ public class PortalSystem extends BaseComponentSystem {
         // Check if the block under the player is a portal block and initiate teleportation
         Vector3i positionBlockUnder = new Vector3i(0, -1, 0).add(roundedPosition);
         if (activePortalPairComponent.bluePortalLocation.equals(positionBlockUnder)) {
-            teleport(activePortalPairComponent.orangePortalLocation.toVector3f(), player);
+            teleport(new Vector3f(activePortalPairComponent.orangePortalLocation), player);
         } else if (activePortalPairComponent.orangePortalLocation.equals(positionBlockUnder)) {
-            teleport(activePortalPairComponent.bluePortalLocation.toVector3f(), player);
+            teleport(new Vector3f(activePortalPairComponent.bluePortalLocation), player);
         }
     }
 
@@ -138,7 +135,7 @@ public class PortalSystem extends BaseComponentSystem {
                             }
                         }
                         if (j == Math.ceil(playerHeight)) {
-                            character.send(new CharacterTeleportEvent(finalDestination.addY(1)));
+                            character.send(new CharacterTeleportEvent(finalDestination.add(0,1,0)));
                             return;
                         }
                     }
@@ -174,7 +171,7 @@ public class PortalSystem extends BaseComponentSystem {
         client.send(new NotificationMessageEvent("Activated Blue Portal. " + (!activatedOrangePortal ? "Activate an Orange Portal to complete pathway." : "Jump on top to teleport!"), client));
 
         // Update activatedPortals entity to store the new location of bluePortalBlock
-        activePortalPairComponent.bluePortalLocation = entity.getComponent(BlockComponent.class).getPosition();
+        activePortalPairComponent.bluePortalLocation = entity.getComponent(BlockComponent.class).getPosition(new Vector3i());
         activatedPortals.addOrSaveComponent(activePortalPairComponent);
     }
 
@@ -195,14 +192,15 @@ public class PortalSystem extends BaseComponentSystem {
         }
 
         // If there is a previously activated OrangePortal, deactivate it and activate the new one
-        if (activatedOrangePortal)
+        if (activatedOrangePortal) {
             worldProvider.getBlock(activePortalPairComponent.orangePortalLocation).getEntity().removeComponent(ActivePortalComponent.class);
+        }
 
         entity.addComponent(new ActivePortalComponent());
         client.send(new NotificationMessageEvent("Activated Orange Portal. " + (!activatedBluePortal ? "Activate a Blue Portal to complete pathway." : "Jump on top to teleport!"), client));
 
         // Update activatedPortals entity to store the new location of orangePortalBlock
-        activePortalPairComponent.orangePortalLocation = entity.getComponent(BlockComponent.class).getPosition();
+        activePortalPairComponent.orangePortalLocation = entity.getComponent(BlockComponent.class).getPosition(new Vector3i());
         activatedPortals.addOrSaveComponent(activePortalPairComponent);
     }
 
