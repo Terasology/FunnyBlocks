@@ -69,7 +69,7 @@ public class SpeedBoosterSystem extends BaseComponentSystem implements UpdateSub
             entity.saveComponent(cmc);
             Vector3f imp = new Vector3f(cmc.getVelocity()).normalize().mul(64);
             imp.y = 6;
-            entity.send(new CharacterImpulseEvent(JomlUtil.from(imp)));
+            entity.send(new CharacterImpulseEvent(imp));
         } else {
             // this will return speed of player to normal
             cmc.speedMultiplier = 1f;

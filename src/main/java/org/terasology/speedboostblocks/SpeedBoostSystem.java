@@ -19,6 +19,7 @@ import com.google.common.collect.Lists;
 import org.terasology.entitySystem.entity.EntityManager;
 import org.terasology.logic.characters.CharacterImpulseEvent;
 import org.terasology.logic.common.ActivateEvent;
+import org.terasology.math.JomlUtil;
 import org.terasology.math.geom.Vector3f;
 import org.terasology.entitySystem.entity.EntityRef;
 import org.terasology.entitySystem.event.ReceiveEvent;
@@ -162,7 +163,7 @@ public class SpeedBoostSystem extends BaseComponentSystem {
             //Calculate the impulse to be applied
             Vector3f impulse = boostDirection.mul(moveForce);
             //Apply the impulse to the player
-            player.send(new CharacterImpulseEvent(impulse));
+            player.send(new CharacterImpulseEvent(JomlUtil.from(impulse)));
             //Reset the force of the boost to prevent a duplicate
             moveForce = 0;
         }
