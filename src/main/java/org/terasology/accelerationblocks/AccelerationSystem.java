@@ -74,7 +74,7 @@ public class AccelerationSystem extends BaseComponentSystem implements UpdateSub
 
     private void applyImpulse(AccelerationComponent acceleration, EntityRef entity) {
         Vector3f impulse = new Vector3f(acceleration.velocity);
-        entity.send(new CharacterImpulseEvent(JomlUtil.from(impulse)));
+        entity.send(new CharacterImpulseEvent(impulse));
     }
 
     @ReceiveEvent

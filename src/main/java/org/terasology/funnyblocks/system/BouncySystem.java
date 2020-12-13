@@ -64,7 +64,7 @@ public class BouncySystem extends BaseComponentSystem {
                 if (Math.round(playerPosition.x) == blockPos.x && Math.round(playerPosition.z) == blockPos.z
                         && Math.round(playerPosition.y - 1) == blockPos.y) {
                     Vector3f impulse = new Vector3f(0, blockEntity.getComponent(BouncyBlockComponent.class).force, 0);
-                    player.send(new CharacterImpulseEvent(JomlUtil.from(impulse)));
+                    player.send(new CharacterImpulseEvent(impulse));
                 }
             }
         }
