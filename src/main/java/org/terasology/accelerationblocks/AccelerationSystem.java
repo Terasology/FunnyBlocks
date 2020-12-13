@@ -15,6 +15,10 @@
  */
 package org.terasology.accelerationblocks;
 
+import org.joml.Quaternionf;
+import org.joml.Vector3f;
+import org.joml.Vector3i;
+import org.joml.Vector3ic;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.terasology.accelerationblocks.component.AccelerationBlockComponent;
@@ -33,9 +37,6 @@ import org.terasology.logic.characters.events.OnEnterBlockEvent;
 import org.terasology.logic.location.LocationComponent;
 import org.terasology.math.JomlUtil;
 import org.terasology.math.Side;
-import org.terasology.math.geom.Quat4f;
-import org.terasology.math.geom.Vector3f;
-import org.terasology.math.geom.Vector3i;
 import org.terasology.registry.In;
 import org.terasology.world.BlockEntityRegistry;
 import org.terasology.world.WorldProvider;
@@ -73,7 +74,7 @@ public class AccelerationSystem extends BaseComponentSystem implements UpdateSub
 
     private void applyImpulse(AccelerationComponent acceleration, EntityRef entity) {
         Vector3f impulse = new Vector3f(acceleration.velocity);
-        entity.send(new CharacterImpulseEvent(JomlUtil.from(impulse)));
+        entity.send(new CharacterImpulseEvent(impulse));
     }
 
     @ReceiveEvent
@@ -110,24 +111,24 @@ public class AccelerationSystem extends BaseComponentSystem implements UpdateSub
     private void initAcceleration(AccelerationComponent acceleration, AccelerationBlockComponent blockAcceleration, Side side) {
         Vector3f velocity = new Vector3f(blockAcceleration.velocity);
         if (!blockAcceleration.ignoreBlockDirection) {
-            Vector3i originalDirection = Side.FRONT.getVector3i();
-            Vector3i blockDirection = side.getVector3i();
-            double angle = Math.acos(originalDirection.getX() * blockDirection.getX() + originalDirection.getZ() * blockDirection.getZ());
+            Vector3ic originalDirection = Side.FRONT.direction();
+            Vector3ic blockDirection = side.direction();
+            double angle = Math.acos(originalDirection.x() * blockDirection.x() + originalDirection.z() * blockDirection.z());
 
-            Vector3i rotAxis = Vector3i.up();
-            Quat4f rotation = getRotationQuat(rotAxis.getX(), rotAxis.getY(), rotAxis.getZ(), (float) angle);
-            Quat4f temp = new Quat4f(rotation);
-            temp.mul(velocity);
-            temp.mulInverse(rotation);
+            Vector3i rotAxis = new Vector3i(0,1,0);
+            Quaternionf rotation = getRotationQuat(rotAxis.x(), rotAxis.y(), rotAxis.z(), (float) angle);
+            Quaternionf temp = new Quaternionf(rotation);
+            temp.transform(velocity);
+            temp.invert(rotation);
 
             //to determine right and left directions
-            if (blockDirection.getX() > 0) {
-                temp.inverse();
+            if (blockDirection.x() > 0) {
+                temp.invert();
             }
 
-            velocity.setX(temp.getX());
-            velocity.setY(temp.getY());
-            velocity.setZ(temp.getZ());
+            velocity.x = temp.x();
+            velocity.y = temp.y();
+            velocity.z = temp.z();
         }
 
         acceleration.velocity = velocity;
@@ -141,8 +142,8 @@ public class AccelerationSystem extends BaseComponentSystem implements UpdateSub
      * @param z Rotation axis z
      * @param angle Rotation angle
      */
-    private static Quat4f getRotationQuat(int x, int y, int z, float angle) {
-        Quat4f result = new Quat4f();
+    private static Quaternionf getRotationQuat(int x, int y, int z, float angle) {
+        Quaternionf result = new Quaternionf();
         float nw = (float) Math.cos(angle / 2);
         float nx = x * (float) Math.sin(angle / 2);
         float ny = y * (float) Math.sin(angle / 2);

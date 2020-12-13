@@ -15,8 +15,8 @@
  */
 package org.terasology.accelerationblocks.component;
 
+import org.joml.Vector3f;
 import org.terasology.entitySystem.Component;
-import org.terasology.math.geom.Vector3f;
 
 public final class AccelerationBlockComponent implements Component {
     public Vector3f velocity;

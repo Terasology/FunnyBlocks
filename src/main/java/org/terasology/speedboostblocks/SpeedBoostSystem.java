@@ -16,11 +16,10 @@
 package org.terasology.speedboostblocks;
 
 import com.google.common.collect.Lists;
+import org.joml.Vector3f;
 import org.terasology.entitySystem.entity.EntityManager;
 import org.terasology.logic.characters.CharacterImpulseEvent;
 import org.terasology.logic.common.ActivateEvent;
-import org.terasology.math.JomlUtil;
-import org.terasology.math.geom.Vector3f;
 import org.terasology.entitySystem.entity.EntityRef;
 import org.terasology.entitySystem.event.ReceiveEvent;
 import org.terasology.entitySystem.systems.BaseComponentSystem;
@@ -45,7 +44,7 @@ import java.util.List;
  */
 @RegisterSystem(RegisterMode.AUTHORITY)
 public class SpeedBoostSystem extends BaseComponentSystem {
-    private Vector3f boostDirection = Vector3f.zero(); //This holds the direction to boost in
+    private Vector3f boostDirection = new Vector3f(); //This holds the direction to boost in
     private int moveForce = 1; //This is the force that the boost will have. The value should be between 1 and 5 to prevent damage to the player.
 
     @In
@@ -112,10 +111,10 @@ public class SpeedBoostSystem extends BaseComponentSystem {
     public void onCharacterMovement(CharacterMoveInputEvent moveInputEvent, EntityRef player, LocationComponent location) {
         //Reset the boost properties
         moveForce = 0;
-        boostDirection = Vector3f.zero();
+        boostDirection = new Vector3f();
 
         //Get the player's location
-        Vector3f playerWorldLocation = location.getWorldPosition();
+        Vector3f playerWorldLocation = location.getWorldPosition(new Vector3f());
 
         //If it doesn't exist
         if (playerWorldLocation == null) {
@@ -129,13 +128,13 @@ public class SpeedBoostSystem extends BaseComponentSystem {
             LocationComponent entityLocation = entity.getComponent(LocationComponent.class);
 
             //If it does not exist
-            if(entityLocation == null) {
+            if (entityLocation == null) {
                 //This block is not in the world so move onto the next one
                 continue;
             }
 
             //Get the block's position
-            Vector3f entityWorldLocation = entityLocation.getWorldPosition();
+            Vector3f entityWorldLocation = entityLocation.getWorldPosition(new Vector3f());
 
             //If it does not exist
             if (entityWorldLocation == null) {
@@ -144,9 +143,9 @@ public class SpeedBoostSystem extends BaseComponentSystem {
             }
 
             //If the player's location matches the block's on the x and z axis (we round it to make the numbers usable)
-            if(Math.round(playerWorldLocation.x) == entityWorldLocation.x && Math.round(playerWorldLocation.z) == entityWorldLocation.z) {
+            if (Math.round(playerWorldLocation.x) == entityWorldLocation.x && Math.round(playerWorldLocation.z) == entityWorldLocation.z) {
                 //If the block is underneath the player
-                if(Math.round(playerWorldLocation.y - 1) == entityWorldLocation.y) {
+                if (Math.round(playerWorldLocation.y - 1) == entityWorldLocation.y) {
                     //Get the SpeedBoost block's properties
                     SpeedBoostComponent component = entity.getComponent(SpeedBoostComponent.class);
                     //Assign the properties to a local variable
@@ -159,15 +158,14 @@ public class SpeedBoostSystem extends BaseComponentSystem {
         }
 
         //If the player is set to be boosted
-        if(boostDirection != Vector3f.zero() && moveForce != 0) {
+        if (boostDirection != new Vector3f() && moveForce != 0) {
             //Calculate the impulse to be applied
             Vector3f impulse = boostDirection.mul(moveForce);
             //Apply the impulse to the player
-            player.send(new CharacterImpulseEvent(JomlUtil.from(impulse)));
+            player.send(new CharacterImpulseEvent(impulse));
             //Reset the force of the boost to prevent a duplicate
             moveForce = 0;
-        }
-        else {
+        } else {
             //There is no force to apply so return
             return;
         }
@@ -187,7 +185,7 @@ public class SpeedBoostSystem extends BaseComponentSystem {
             case 2: return new Vector3f(0, 0, -1); //Down
             case 3: return new Vector3f(1, 0, 0); //Left
             case 4: return playerDirection; //This applies an impulse in the direction the player is moving in
-            default: return Vector3f.zero(); //This should never happen but if the direction is unknown then do not move
+            default: return new Vector3f(); //This should never happen but if the direction is unknown then do not move
         }
     }
 
