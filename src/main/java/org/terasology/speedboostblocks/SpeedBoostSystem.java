@@ -1,31 +1,18 @@
-/*
- * Copyright 2016 MovingBlocks
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *      http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
+// Copyright 2021 The Terasology Foundation
+// SPDX-License-Identifier: Apache-2.0
 package org.terasology.speedboostblocks;
 
 import com.google.common.collect.Lists;
 import org.joml.Vector3f;
 import org.terasology.entitySystem.entity.EntityManager;
-import org.terasology.logic.characters.CharacterImpulseEvent;
-import org.terasology.logic.common.ActivateEvent;
 import org.terasology.entitySystem.entity.EntityRef;
 import org.terasology.entitySystem.event.ReceiveEvent;
 import org.terasology.entitySystem.systems.BaseComponentSystem;
 import org.terasology.entitySystem.systems.RegisterMode;
 import org.terasology.entitySystem.systems.RegisterSystem;
+import org.terasology.logic.characters.CharacterImpulseEvent;
 import org.terasology.logic.characters.CharacterMoveInputEvent;
+import org.terasology.logic.common.ActivateEvent;
 import org.terasology.logic.location.LocationComponent;
 import org.terasology.registry.In;
 import org.terasology.speedboostblocks.component.SpeedBoostComponent;
@@ -73,7 +60,7 @@ public class SpeedBoostSystem extends BaseComponentSystem {
         //Iterate through the possible block directions
         for(Block block : blocks) {
             //If the direction of the block is equal to one of the possible directions
-            if(block.toString().equals(blockComponent.getBlock().toString())) {
+            if(block.toString().equals(blockComponent.block.toString())) {
                 //Get the block's direction number and apply it to the boost properties
                 event.getPlacedBlock().getComponent(SpeedBoostComponent.class).boostDirection = getDirection(block.toString());
             }
@@ -212,7 +199,7 @@ public class SpeedBoostSystem extends BaseComponentSystem {
      */
     private List<Block> getBlockDirections(BlockComponent blockComponent) {
         //Assign all the possible block rotations to an array
-        List<Block> blocks = Lists.newArrayList(blockComponent.getBlock().getBlockFamily().getBlocks());
+        List<Block> blocks = Lists.newArrayList(blockComponent.block.getBlockFamily().getBlocks());
 
         //Obtain the blocks per direction to reassign later in the correct order
         Block upBlock = blocks.get(2); //This gets the instance of the block facing forwards
