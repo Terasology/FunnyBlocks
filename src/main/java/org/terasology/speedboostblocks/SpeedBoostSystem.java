@@ -60,7 +60,7 @@ public class SpeedBoostSystem extends BaseComponentSystem {
         //Iterate through the possible block directions
         for(Block block : blocks) {
             //If the direction of the block is equal to one of the possible directions
-            if(block.toString().equals(blockComponent.block.toString())) {
+            if(block.toString().equals(blockComponent.getBlock().toString())) {
                 //Get the block's direction number and apply it to the boost properties
                 event.getPlacedBlock().getComponent(SpeedBoostComponent.class).boostDirection = getDirection(block.toString());
             }
@@ -199,7 +199,7 @@ public class SpeedBoostSystem extends BaseComponentSystem {
      */
     private List<Block> getBlockDirections(BlockComponent blockComponent) {
         //Assign all the possible block rotations to an array
-        List<Block> blocks = Lists.newArrayList(blockComponent.block.getBlockFamily().getBlocks());
+        List<Block> blocks = Lists.newArrayList(blockComponent.getBlock().getBlockFamily().getBlocks());
 
         //Obtain the blocks per direction to reassign later in the correct order
         Block upBlock = blocks.get(2); //This gets the instance of the block facing forwards
