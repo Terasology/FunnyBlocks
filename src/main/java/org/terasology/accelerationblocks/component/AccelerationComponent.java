@@ -3,7 +3,7 @@
 package org.terasology.accelerationblocks.component;
 
 import org.joml.Vector3f;
-import org.terasology.entitySystem.Component;
+import org.terasology.engine.entitySystem.Component;
 
 public final class AccelerationComponent implements Component {
     public Vector3f velocity;

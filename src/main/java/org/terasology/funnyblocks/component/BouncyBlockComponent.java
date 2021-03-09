@@ -15,7 +15,7 @@
  */
 package org.terasology.funnyblocks.component;
 
-import org.terasology.entitySystem.Component;
+import org.terasology.engine.entitySystem.Component;
 
 /**
  * Bouncy block component, making block bouncy.

@@ -19,28 +19,29 @@ import org.joml.Vector3f;
 import org.joml.Vector3i;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.terasology.entitySystem.entity.EntityManager;
-import org.terasology.entitySystem.entity.EntityRef;
-import org.terasology.entitySystem.event.ReceiveEvent;
-import org.terasology.entitySystem.prefab.PrefabManager;
-import org.terasology.entitySystem.systems.BaseComponentSystem;
-import org.terasology.entitySystem.systems.RegisterSystem;
-import org.terasology.logic.characters.CharacterMoveInputEvent;
-import org.terasology.logic.characters.CharacterMovementComponent;
-import org.terasology.logic.characters.CharacterTeleportEvent;
-import org.terasology.logic.common.ActivateEvent;
-import org.terasology.logic.health.DestroyEvent;
-import org.terasology.logic.location.LocationComponent;
-import org.terasology.logic.notifications.NotificationMessageEvent;
+import org.terasology.engine.core.Time;
+import org.terasology.engine.entitySystem.entity.EntityManager;
+import org.terasology.engine.entitySystem.entity.EntityRef;
+import org.terasology.engine.entitySystem.event.ReceiveEvent;
+import org.terasology.engine.entitySystem.prefab.PrefabManager;
+import org.terasology.engine.entitySystem.systems.BaseComponentSystem;
+import org.terasology.engine.entitySystem.systems.RegisterSystem;
+import org.terasology.engine.logic.characters.CharacterMoveInputEvent;
+import org.terasology.engine.logic.characters.CharacterMovementComponent;
+import org.terasology.engine.logic.characters.CharacterTeleportEvent;
+import org.terasology.engine.logic.common.ActivateEvent;
+import org.terasology.engine.logic.health.DestroyEvent;
+import org.terasology.engine.logic.location.LocationComponent;
+import org.terasology.engine.logic.notifications.NotificationMessageEvent;
+import org.terasology.engine.registry.In;
+import org.terasology.engine.world.BlockEntityRegistry;
+import org.terasology.engine.world.WorldProvider;
+import org.terasology.engine.world.block.Block;
+import org.terasology.engine.world.block.BlockComponent;
 import org.terasology.portalblocks.component.ActivePortalComponent;
 import org.terasology.portalblocks.component.ActivePortalPairComponent;
 import org.terasology.portalblocks.component.BluePortalComponent;
 import org.terasology.portalblocks.component.OrangePortalComponent;
-import org.terasology.registry.In;
-import org.terasology.world.BlockEntityRegistry;
-import org.terasology.world.WorldProvider;
-import org.terasology.world.block.Block;
-import org.terasology.world.block.BlockComponent;
 
 /**
  * This class manages and controls Portal blocks.
@@ -71,7 +72,7 @@ public class PortalSystem extends BaseComponentSystem {
     private PrefabManager prefabManager;
 
     @In
-    private org.terasology.engine.Time time;
+    private Time time;
 
     /**
      * This is called when the character is moving.

@@ -15,7 +15,7 @@
  */
 package org.terasology.speedboostblocks.component;
 
-import org.terasology.entitySystem.Component;
+import org.terasology.engine.entitySystem.Component;
 
 /**
  * This component holds the data for a SpeedBoost block.
