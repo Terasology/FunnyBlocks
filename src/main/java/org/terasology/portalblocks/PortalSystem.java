@@ -30,7 +30,7 @@ import org.terasology.engine.logic.characters.CharacterMoveInputEvent;
 import org.terasology.engine.logic.characters.CharacterMovementComponent;
 import org.terasology.engine.logic.characters.CharacterTeleportEvent;
 import org.terasology.engine.logic.common.ActivateEvent;
-import org.terasology.logic.health.DestroyEvent;
+import org.terasology.engine.logic.health.DestroyEvent;
 import org.terasology.engine.logic.location.LocationComponent;
 import org.terasology.engine.logic.notifications.NotificationMessageEvent;
 import org.terasology.engine.registry.In;

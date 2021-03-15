@@ -16,7 +16,7 @@ import org.terasology.engine.entitySystem.systems.RegisterMode;
 import org.terasology.engine.entitySystem.systems.RegisterSystem;
 import org.terasology.engine.entitySystem.systems.UpdateSubscriberSystem;
 import org.terasology.engine.logic.characters.CharacterMoveInputEvent;
-import org.terasology.logic.health.EngineDamageTypes;
+import org.terasology.engine.logic.health.EngineDamageTypes;
 import org.terasology.logic.health.event.DoDamageEvent;
 import org.terasology.engine.logic.location.LocationComponent;
 import org.terasology.engine.registry.In;
