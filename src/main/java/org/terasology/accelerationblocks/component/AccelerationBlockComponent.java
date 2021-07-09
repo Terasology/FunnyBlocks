@@ -1,11 +1,11 @@
-// Copyright 2020 The Terasology Foundation
+// Copyright 2021 The Terasology Foundation
 // SPDX-License-Identifier: Apache-2.0
 package org.terasology.accelerationblocks.component;
 
 import org.joml.Vector3f;
-import org.terasology.engine.entitySystem.Component;
+import org.terasology.gestalt.entitysystem.component.Component;
 
-public final class AccelerationBlockComponent implements Component {
+public final class AccelerationBlockComponent implements Component<AccelerationBlockComponent> {
     public Vector3f velocity;
 
     public boolean ignoreBlockDirection;
