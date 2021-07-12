@@ -9,4 +9,9 @@ import org.terasology.gestalt.entitysystem.component.Component;
  */
 public class BouncyBlockComponent implements Component<BouncyBlockComponent> {
     public float force = 20;
+
+    @Override
+    public void copy(BouncyBlockComponent other) {
+        this.force = other.force;
+    }
 }

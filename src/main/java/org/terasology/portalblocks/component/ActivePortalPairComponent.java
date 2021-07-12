@@ -8,6 +8,12 @@ import org.terasology.gestalt.entitysystem.component.Component;
 
 @Replicate
 public class ActivePortalPairComponent implements Component<ActivePortalPairComponent> {
-    public Vector3i orangePortalLocation;
-    public Vector3i bluePortalLocation;
+    public Vector3i orangePortalLocation = new Vector3i();
+    public Vector3i bluePortalLocation = new Vector3i();
+
+    @Override
+    public void copy(ActivePortalPairComponent other) {
+        this.orangePortalLocation.set(other.orangePortalLocation);
+        this.bluePortalLocation.set(other.bluePortalLocation);
+    }
 }

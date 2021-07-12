@@ -18,4 +18,11 @@ public class BreakingComponent implements Component<BreakingComponent> {
 
     // Stores whether block is walked over
     public boolean triggered = false;
+
+    @Override
+    public void copy(BreakingComponent other) {
+        this.breakInterval = other.breakInterval;
+        this.breakTime = other.breakTime;
+        this.triggered = other.triggered;
+    }
 }

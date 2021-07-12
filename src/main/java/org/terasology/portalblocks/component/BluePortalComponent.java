@@ -14,4 +14,9 @@ public class BluePortalComponent implements Component<BluePortalComponent> {
 
     // Stores whether block is activated
     public boolean activated = false;
+
+    @Override
+    public void copy(BluePortalComponent other) {
+        this.activated = other.activated;
+    }
 }

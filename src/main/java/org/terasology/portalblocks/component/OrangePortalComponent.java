@@ -10,4 +10,9 @@ public class OrangePortalComponent implements Component<OrangePortalComponent> {
 
     // Stores whether block is activated
     public boolean activated = false;
+
+    @Override
+    public void copy(OrangePortalComponent other) {
+        this.activated = other.activated;
+    }
 }

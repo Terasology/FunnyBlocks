@@ -31,4 +31,9 @@ public class SpeedBoostComponent implements Component<SpeedBoostComponent> {
             boostDirection = 0;
         }
     }
+
+    @Override
+    public void copy(SpeedBoostComponent other) {
+        this.boostDirection = other.boostDirection;
+    }
 }

@@ -6,5 +6,9 @@ import org.terasology.engine.network.Replicate;
 import org.terasology.gestalt.entitysystem.component.Component;
 
 @Replicate
-public class ActivePortalComponent implements Component{
+public class ActivePortalComponent implements Component<ActivePortalComponent>{
+    @Override
+    public void copy(ActivePortalComponent other) {
+
+    }
 }

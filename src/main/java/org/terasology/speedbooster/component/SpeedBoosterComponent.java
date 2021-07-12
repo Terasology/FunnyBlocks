@@ -6,4 +6,9 @@ import org.terasology.gestalt.entitysystem.component.Component;
 
 public class SpeedBoosterComponent implements Component<SpeedBoosterComponent> {
     public int speedMultiplier = 5;
+
+    @Override
+    public void copy(SpeedBoosterComponent other) {
+        this.speedMultiplier = other.speedMultiplier;
+    }
 }
