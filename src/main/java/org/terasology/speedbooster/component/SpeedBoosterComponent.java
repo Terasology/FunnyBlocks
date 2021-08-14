@@ -8,7 +8,7 @@ public class SpeedBoosterComponent implements Component<SpeedBoosterComponent> {
     public int speedMultiplier = 5;
 
     @Override
-    public void copy(SpeedBoosterComponent other) {
+    public void copyFrom(SpeedBoosterComponent other) {
         this.speedMultiplier = other.speedMultiplier;
     }
 }

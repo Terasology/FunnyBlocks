@@ -16,7 +16,7 @@ public class BluePortalComponent implements Component<BluePortalComponent> {
     public boolean activated = false;
 
     @Override
-    public void copy(BluePortalComponent other) {
+    public void copyFrom(BluePortalComponent other) {
         this.activated = other.activated;
     }
 }

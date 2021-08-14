@@ -33,7 +33,7 @@ public class SpeedBoostComponent implements Component<SpeedBoostComponent> {
     }
 
     @Override
-    public void copy(SpeedBoostComponent other) {
+    public void copyFrom(SpeedBoostComponent other) {
         this.boostDirection = other.boostDirection;
     }
 }

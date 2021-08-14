@@ -20,7 +20,7 @@ public class BreakingComponent implements Component<BreakingComponent> {
     public boolean triggered = false;
 
     @Override
-    public void copy(BreakingComponent other) {
+    public void copyFrom(BreakingComponent other) {
         this.breakInterval = other.breakInterval;
         this.breakTime = other.breakTime;
         this.triggered = other.triggered;

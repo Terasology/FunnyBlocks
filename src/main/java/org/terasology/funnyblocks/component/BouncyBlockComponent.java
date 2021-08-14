@@ -11,7 +11,7 @@ public class BouncyBlockComponent implements Component<BouncyBlockComponent> {
     public float force = 20;
 
     @Override
-    public void copy(BouncyBlockComponent other) {
+    public void copyFrom(BouncyBlockComponent other) {
         this.force = other.force;
     }
 }

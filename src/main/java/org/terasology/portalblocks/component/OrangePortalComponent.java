@@ -12,7 +12,7 @@ public class OrangePortalComponent implements Component<OrangePortalComponent> {
     public boolean activated = false;
 
     @Override
-    public void copy(OrangePortalComponent other) {
+    public void copyFrom(OrangePortalComponent other) {
         this.activated = other.activated;
     }
 }

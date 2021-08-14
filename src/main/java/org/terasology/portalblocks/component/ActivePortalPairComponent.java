@@ -12,7 +12,7 @@ public class ActivePortalPairComponent implements Component<ActivePortalPairComp
     public Vector3i bluePortalLocation = new Vector3i();
 
     @Override
-    public void copy(ActivePortalPairComponent other) {
+    public void copyFrom(ActivePortalPairComponent other) {
         this.orangePortalLocation.set(other.orangePortalLocation);
         this.bluePortalLocation.set(other.bluePortalLocation);
     }

@@ -8,7 +8,7 @@ import org.terasology.gestalt.entitysystem.component.Component;
 @Replicate
 public class ActivePortalComponent implements Component<ActivePortalComponent>{
     @Override
-    public void copy(ActivePortalComponent other) {
+    public void copyFrom(ActivePortalComponent other) {
 
     }
 }

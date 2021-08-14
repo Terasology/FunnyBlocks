@@ -11,7 +11,7 @@ public final class AccelerationBlockComponent implements Component<AccelerationB
     public boolean ignoreBlockDirection;
 
     @Override
-    public void copy(AccelerationBlockComponent other) {
+    public void copyFrom(AccelerationBlockComponent other) {
         this.velocity.set(other.velocity);
         this.ignoreBlockDirection = other.ignoreBlockDirection;
     }
