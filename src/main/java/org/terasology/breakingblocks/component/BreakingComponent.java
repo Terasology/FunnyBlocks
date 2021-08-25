@@ -1,14 +1,14 @@
-// Copyright 2020 The Terasology Foundation
+// Copyright 2021 The Terasology Foundation
 // SPDX-License-Identifier: Apache-2.0
 package org.terasology.breakingblocks.component;
 
-import org.terasology.engine.entitySystem.Component;
+import org.terasology.gestalt.entitysystem.component.Component;
 
 /**
  * This component holds the data for a Breaking block.
  */
 
-public class BreakingComponent implements Component {
+public class BreakingComponent implements Component<BreakingComponent> {
 
     // Time interval between two damages of magnitude = 1
     public float breakInterval = 1.0f;
@@ -18,4 +18,11 @@ public class BreakingComponent implements Component {
 
     // Stores whether block is walked over
     public boolean triggered = false;
+
+    @Override
+    public void copyFrom(BreakingComponent other) {
+        this.breakInterval = other.breakInterval;
+        this.breakTime = other.breakTime;
+        this.triggered = other.triggered;
+    }
 }
