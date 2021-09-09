@@ -17,12 +17,12 @@ import org.terasology.engine.entitySystem.systems.RegisterSystem;
 import org.terasology.engine.entitySystem.systems.UpdateSubscriberSystem;
 import org.terasology.engine.logic.characters.CharacterMoveInputEvent;
 import org.terasology.engine.logic.health.EngineDamageTypes;
-import org.terasology.module.health.events.DoDamageEvent;
 import org.terasology.engine.logic.location.LocationComponent;
 import org.terasology.engine.registry.In;
 import org.terasology.engine.world.WorldProvider;
 import org.terasology.engine.world.block.BlockComponent;
 import org.terasology.math.TeraMath;
+import org.terasology.module.health.events.DoDamageEvent;
 
 /**
  * This class manages and controls Breaking blocks.
