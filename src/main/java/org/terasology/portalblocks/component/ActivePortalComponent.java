@@ -3,12 +3,8 @@
 package org.terasology.portalblocks.component;
 
 import org.terasology.engine.network.Replicate;
-import org.terasology.gestalt.entitysystem.component.Component;
+import org.terasology.gestalt.entitysystem.component.EmptyComponent;
 
 @Replicate
-public class ActivePortalComponent implements Component<ActivePortalComponent>{
-    @Override
-    public void copyFrom(ActivePortalComponent other) {
-
-    }
+public class ActivePortalComponent extends EmptyComponent<ActivePortalComponent> {
 }
